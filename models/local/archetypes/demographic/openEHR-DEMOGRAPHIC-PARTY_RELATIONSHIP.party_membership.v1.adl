@@ -1,0 +1,78 @@
+archetype (adl_version=1.4; uid=6b5f2560-99b0-43f2-af31-7a22ae17c0f8)
+	openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.party_membership.v1
+
+concept
+	[at0000]	-- Membership
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record that a party is a member of a group, such as a care team, or of an organisation, and in which part.">
+			use = <"Use in the member's party, with the member as source. The relationship is held by its source party and versioned with it; its time_validity is the period in which it is active. The archetype id is the relationship's type.">
+			keywords = <"membership", "member", "care team", "employment", "affiliation">
+			misuse = <"Not for a patient in the care of a team: use a care relationship. Not for holding a role: use a role assignment.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"Derived from the employment relationship of the CKM draft openEHR-DEMOGRAPHIC-ROLE.individual_provider.v0. Aligned with the HL7 FHIR R4 (4.0.1) elements CareTeam.participant and PractitionerRole.organization (https://hl7.org/fhir/R4/).">
+	>
+
+definition
+	PARTY_RELATIONSHIP[at0000] matches {	-- Membership
+		details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {	-- Details
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {	-- Member role
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {	-- Comment
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+				}
+			}
+		}
+		target matches {
+			PARTY_REF matches {
+				type matches {"GROUP", "ORGANISATION"}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Membership">
+					description = <"The source party is a member of the target party: a group, such as a care team, or an organisation.">
+				>
+				["at0001"] = <
+					text = <"Details">
+					description = <"Data about the relationship.">
+				>
+				["at0002"] = <
+					text = <"Member role">
+					description = <"The part the member plays in the group or organisation.">
+					comment = <"Coding is preferred, for example with SNOMED CT. Corresponds to FHIR CareTeam.participant.role.">
+				>
+				["at0003"] = <
+					text = <"Comment">
+					description = <"A note about the membership.">
+				>
+			>
+		>
+	>

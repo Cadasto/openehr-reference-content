@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  generated:
+    name: Generated files (Python 3.9)
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
+    steps:
+      - uses: actions/checkout@v7
+      - name: Archetypes and templates as generated, CKM files as pinned
+        run: PYTHONDONTWRITEBYTECODE=1 python3 tools/generator/build.py --check
+
+  gate:
+    name: make ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: conformance/go.mod
+          cache-dependency-path: conformance/go.sum
+      - name: make ci
+        run: make ci

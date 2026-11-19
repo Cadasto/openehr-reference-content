@@ -1,0 +1,285 @@
+archetype (adl_version=1.4; uid=a34ba558-6111-48f0-b29e-60625ceb908b)
+	openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1
+
+concept
+	[at0000]	-- Agent
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record a non-human actor, such as a software application, a device or a service, as a party in a demographic service.">
+			use = <"Use for an actor that is not a person, an organisation or a group: an application that commits records, a device that records data, a service that exchanges records. Record the organisation the agent acts for as an acting on behalf relationship. For a medical device, add the CKM Medical device cluster.">
+			keywords = <"agent", "software", "application", "device", "system", "service", "demographics">
+			misuse = <"Not for a person who uses a device or an application. Not for a device as clinical content about a patient, such as an implant: use the CKM Medical device cluster in the health record.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"Aligned with the HL7 FHIR R4 (4.0.1) resource Device (https://hl7.org/fhir/R4/) and the published CKM cluster openEHR-EHR-CLUSTER.device.v1.">
+	>
+
+definition
+	AGENT[at0000] matches {	-- Agent
+		details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {	-- Details
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {	-- Identifier
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {	-- Agent type
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0004,	-- Software application
+									at0005,	-- Device
+									at0006]	-- Service
+								}
+							}
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0007] occurrences matches {0..1} matches {	-- Description
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0008] occurrences matches {0..1} matches {	-- Manufacturer
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0009] occurrences matches {0..1} matches {	-- Model
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0010] occurrences matches {0..*} matches {	-- Version
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0011] occurrences matches {0..1} matches {	-- Status
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0012,	-- Active
+									at0013,	-- Inactive
+									at0014,	-- Entered in error
+									at0015]	-- Unknown
+								}
+							}
+						}
+					}
+					allow_archetype CLUSTER[at0016] occurrences matches {0..1} matches {	-- Device details
+						include
+							archetype_id/value matches {/openEHR-EHR-CLUSTER\.device(-[a-zA-Z0-9_]+)*\.v1/}
+					}
+					allow_archetype CLUSTER[at0017] occurrences matches {0..*} matches {	-- Additional details
+						include
+							archetype_id/value matches {/.*/}
+					}
+				}
+			}
+		}
+		identities cardinality matches {1..*; unordered} matches {
+			PARTY_IDENTITY[at0018] occurrences matches {1..*} matches {	-- Agent name
+				name matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {
+							[local::
+							at0019,	-- User-friendly name
+							at0020,	-- Manufacturer name
+							at0021,	-- Model name
+							at0022]	-- Other
+						}
+					}
+					DV_TEXT matches {*}
+				}
+				details matches {
+					ITEM_TREE[at0023] occurrences matches {1..1} matches {	-- Name details
+						items cardinality matches {1..*; unordered} matches {
+							ELEMENT[at0024] occurrences matches {1..1} matches {	-- Name
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		contacts existence matches {0..1} cardinality matches {0..*; unordered} matches {
+			CONTACT[at0025] occurrences matches {0..*} matches {	-- Contact
+				addresses cardinality matches {1..*; unordered} matches {
+					ADDRESS[at0026] occurrences matches {0..*} matches {	-- Electronic communication
+						details matches {
+							ITEM_TREE[at0027] occurrences matches {1..1} matches {	-- Electronic communication details
+								items cardinality matches {1..1; unordered} matches {
+									allow_archetype CLUSTER[at0028] occurrences matches {1..1} matches {	-- Electronic communication
+										include
+											archetype_id/value matches {/openEHR-EHR-CLUSTER\.electronic_communication(-[a-zA-Z0-9_]+)*\.v1/}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		relationships existence matches {0..1} cardinality matches {0..*; unordered} matches {
+			allow_archetype PARTY_RELATIONSHIP[at0029] occurrences matches {0..*} matches {	-- Relationship
+				include
+					archetype_id/value matches {/openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.acting_on_behalf(-[a-zA-Z0-9_]+)*\.v1/}
+					archetype_id/value matches {/openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.party_membership(-[a-zA-Z0-9_]+)*\.v1/}
+					archetype_id/value matches {/openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.role_assignment(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Agent">
+					description = <"A non-human actor, such as a software application, a device or a service, that takes part in care or in the exchange of records.">
+				>
+				["at0001"] = <
+					text = <"Details">
+					description = <"Data about the agent.">
+				>
+				["at0002"] = <
+					text = <"Identifier">
+					description = <"An identifier of the agent, such as a client id, a serial number or a unique device identifier.">
+					comment = <"Corresponds to FHIR Device.identifier.">
+				>
+				["at0003"] = <
+					text = <"Agent type">
+					description = <"The kind of agent.">
+					comment = <"Corresponds to FHIR Device.type.">
+				>
+				["at0004"] = <
+					text = <"Software application">
+					description = <"A program that acts, such as a clinical application or an integration engine.">
+				>
+				["at0005"] = <
+					text = <"Device">
+					description = <"A physical device, such as a medical device or a monitor.">
+				>
+				["at0006"] = <
+					text = <"Service">
+					description = <"A service that acts on its own, such as a scheduled job or a remote system.">
+				>
+				["at0007"] = <
+					text = <"Description">
+					description = <"A description of the agent.">
+				>
+				["at0008"] = <
+					text = <"Manufacturer">
+					description = <"The organisation that makes or publishes the agent.">
+					comment = <"Corresponds to FHIR Device.manufacturer.">
+				>
+				["at0009"] = <
+					text = <"Model">
+					description = <"The model or product name.">
+					comment = <"Corresponds to FHIR Device.modelNumber.">
+				>
+				["at0010"] = <
+					text = <"Version">
+					description = <"A version of the agent or of one of its components.">
+					comment = <"Corresponds to FHIR Device.version.">
+				>
+				["at0011"] = <
+					text = <"Status">
+					description = <"Whether the agent is in use.">
+					comment = <"The codes match FHIR R4 FHIRDeviceStatus.">
+				>
+				["at0012"] = <
+					text = <"Active">
+					description = <"The agent is in use. FHIR FHIRDeviceStatus code active.">
+				>
+				["at0013"] = <
+					text = <"Inactive">
+					description = <"The agent is not in use. FHIR FHIRDeviceStatus code inactive.">
+				>
+				["at0014"] = <
+					text = <"Entered in error">
+					description = <"The agent was recorded in error. FHIR FHIRDeviceStatus code entered-in-error.">
+				>
+				["at0015"] = <
+					text = <"Unknown">
+					description = <"It is not known whether the agent is in use. FHIR FHIRDeviceStatus code unknown.">
+				>
+				["at0016"] = <
+					text = <"Device details">
+					description = <"Details of the medical device, when the agent is one.">
+				>
+				["at0017"] = <
+					text = <"Additional details">
+					description = <"Further details about the agent that a particular use needs.">
+				>
+				["at0018"] = <
+					text = <"Agent name">
+					description = <"A name by which the agent is known.">
+					comment = <"The name of the PARTY_IDENTITY is the kind of name. The codes match FHIR R4 DeviceNameType.">
+				>
+				["at0019"] = <
+					text = <"User-friendly name">
+					description = <"The name users know the agent by. FHIR DeviceNameType code user-friendly-name.">
+				>
+				["at0020"] = <
+					text = <"Manufacturer name">
+					description = <"The name the manufacturer gives the agent. FHIR DeviceNameType code manufacturer-name.">
+				>
+				["at0021"] = <
+					text = <"Model name">
+					description = <"The name of the model. FHIR DeviceNameType code model-name.">
+				>
+				["at0022"] = <
+					text = <"Other">
+					description = <"Another kind of name. FHIR DeviceNameType code other.">
+				>
+				["at0023"] = <
+					text = <"Name details">
+					description = <"The name.">
+				>
+				["at0024"] = <
+					text = <"Name">
+					description = <"The name of the agent, as it is displayed.">
+				>
+				["at0025"] = <
+					text = <"Contact">
+					description = <"A group of addresses at which the party can be reached for one purpose, with the period in which they are valid.">
+				>
+				["at0026"] = <
+					text = <"Electronic communication">
+					description = <"An electronic address, such as a telephone number, an email address or a URL.">
+				>
+				["at0027"] = <
+					text = <"Electronic communication details">
+					description = <"The structure that holds the electronic address.">
+				>
+				["at0028"] = <
+					text = <"Electronic communication">
+					description = <"The electronic address.">
+				>
+				["at0029"] = <
+					text = <"Relationship">
+					description = <"A relationship the agent holds to another party.">
+				>
+			>
+		>
+	>

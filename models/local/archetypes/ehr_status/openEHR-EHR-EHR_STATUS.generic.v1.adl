@@ -1,0 +1,51 @@
+archetype (adl_version=1.4; uid=f06767d8-6671-404e-b273-73728ea33e96)
+	openEHR-EHR-EHR_STATUS.generic.v1
+
+concept
+	[at0000]	-- EHR Status
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details.">
+			use = <"Use for the EHR_STATUS of an EHR that needs no structure beyond the Reference Model's: its subject, whether it is queryable and modifiable, and other details left open.">
+			keywords = <"EHR status", "subject", "queryable", "modifiable">
+			misuse = <"Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details have a structure of their own: specialise this archetype or author another.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"CKM publishes no archetype for this class. The archetype id is the one EHRbase gives an instance of it by default, so a template on it validates what a CDR creates.">
+	>
+
+definition
+	EHR_STATUS[at0000] matches {	-- EHR Status
+		other_details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {*}	-- Other details
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"EHR Status">
+					description = <"The status of an EHR: its subject, whether it may be queried and modified, and other details.">
+				>
+				["at0001"] = <
+					text = <"Other details">
+					description = <"Further details about the EHR status, as a tree of items.">
+				>
+			>
+		>
+	>

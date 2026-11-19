@@ -1,0 +1,13 @@
+# The published openEHR CKM clusters the templates embed, as CKM exports them.
+# Refresh with make sync (network); verify with make check.
+# sha256  file  CKM-cid  revision
+e76e548984e8a2bdfa7cb8fbaee844c55e838a7d6806682d1a2c1d461fbc4b28  openEHR-EHR-CLUSTER.structured_name.v1.adl  1013.1.5359  1.0.3
+76d95e205f9c67d33e58420df95c4735823df7663a76a7cc7bd122aa27d93cc0  openEHR-EHR-CLUSTER.structured_name.v1.xml  1013.1.5359  1.0.3
+38ab0d7879da33e620476e7e555948c3007de12c905d0abd79f05a6aa8caec97  openEHR-EHR-CLUSTER.address.v1.adl  1013.1.273  1.1.3
+d974166282114c3a3054fc33773faadeed9895e9bb1c667a1e2264a412632a23  openEHR-EHR-CLUSTER.address.v1.xml  1013.1.273  1.1.3
+e460a52a148d4b73b8cd0c39817e64c986e928b841cf9c7b7be2647588ebc295  openEHR-EHR-CLUSTER.electronic_communication.v1.adl  1013.1.5356  1.0.4
+4886f8fed72072efcf4d0cc25de352442a68c5bb50766fb62b74fb2cedc5c0c4  openEHR-EHR-CLUSTER.electronic_communication.v1.xml  1013.1.5356  1.0.4
+6890e62cffef6ee83ab95094cd0595fe74347c1903a428afc0afb0b7004d9e44  openEHR-EHR-CLUSTER.person.v1.adl  1013.1.5358  1.0.5
+ad5c594325ee59c4e66fc196b24302c873d0bce534b98aaa86e4a3be3aa00fad  openEHR-EHR-CLUSTER.person.v1.xml  1013.1.5358  1.0.5
+ecf7fa1847f1679cb1d00a2e100e501fbe5cc75e1791ace05158fe87bcf4cfbe  openEHR-EHR-CLUSTER.device.v1.adl  1013.1.17  1.1.6
+62cac32a32eafe6508065315229130856608de572641c71bf0c6dc5584171670  openEHR-EHR-CLUSTER.device.v1.xml  1013.1.17  1.1.6

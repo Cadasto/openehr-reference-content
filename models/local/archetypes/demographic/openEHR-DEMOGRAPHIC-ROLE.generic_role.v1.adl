@@ -1,0 +1,218 @@
+archetype (adl_version=1.4; uid=0bc0d565-be8b-4093-abcd-8af2a3e60e36)
+	openEHR-DEMOGRAPHIC-ROLE.generic_role.v1
+
+concept
+	[at0000]	-- Role
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record a function that actors perform, such as care provider, patient or administrator, with the capabilities it brings and the period in which it holds.">
+			use = <"Use for a role in a demographic service. A role may be held by one actor, named in its performer, or be shared: a service may keep one ROLE per function and record who holds it as a role assignment relationship from the actor. Capabilities name what the role permits, such as access scopes, and what it requires.">
+			keywords = <"role", "function", "capability", "permission", "practitioner role", "demographics">
+			misuse = <"Not for a person's own qualifications or registrations: record those on the PERSON. Not for the relationship between a patient and a care provider: use a care relationship.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"Derived from the CKM drafts openEHR-DEMOGRAPHIC-ROLE.individual_provider.v0 and CAPABILITY.individual_credentials.v0. Aligned with the HL7 FHIR R4 (4.0.1) resource PractitionerRole (https://hl7.org/fhir/R4/).">
+	>
+
+definition
+	ROLE[at0000] matches {	-- Role
+		details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {	-- Details
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {	-- Role code
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..*} matches {	-- Specialty
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0004] occurrences matches {0..1} matches {	-- Description
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0005] occurrences matches {0..*} matches {	-- Identifier
+						value matches {
+							DV_IDENTIFIER matches {*}
+						}
+					}
+					ELEMENT[at0006] occurrences matches {0..1} matches {	-- Active
+						value matches {
+							DV_BOOLEAN matches {*}
+						}
+					}
+					allow_archetype CLUSTER[at0007] occurrences matches {0..*} matches {	-- Additional details
+						include
+							archetype_id/value matches {/.*/}
+					}
+				}
+			}
+		}
+		identities cardinality matches {1..*; unordered} matches {
+			PARTY_IDENTITY[at0008] occurrences matches {1..*} matches {	-- Role name
+				details matches {
+					ITEM_TREE[at0009] occurrences matches {1..1} matches {	-- Name details
+						items cardinality matches {1..*; unordered} matches {
+							ELEMENT[at0010] occurrences matches {1..1} matches {	-- Name
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		capabilities existence matches {0..1} cardinality matches {0..*; unordered} matches {
+			CAPABILITY[at0011] occurrences matches {0..*} matches {	-- Capability
+				credentials matches {
+					ITEM_TREE[at0012] occurrences matches {1..1} matches {	-- Credentials
+						items cardinality matches {1..*; unordered} matches {
+							ELEMENT[at0013] occurrences matches {0..*} matches {	-- Permission
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0014] occurrences matches {0..*} matches {	-- Required qualification
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0015] occurrences matches {0..1} matches {	-- Description
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		contacts existence matches {0..1} cardinality matches {0..*; unordered} matches {
+			CONTACT[at0016] occurrences matches {0..*} matches {	-- Contact
+				addresses cardinality matches {1..*; unordered} matches {
+					ADDRESS[at0017] occurrences matches {0..*} matches {	-- Electronic communication
+						details matches {
+							ITEM_TREE[at0018] occurrences matches {1..1} matches {	-- Electronic communication details
+								items cardinality matches {1..1; unordered} matches {
+									allow_archetype CLUSTER[at0019] occurrences matches {1..1} matches {	-- Electronic communication
+										include
+											archetype_id/value matches {/openEHR-EHR-CLUSTER\.electronic_communication(-[a-zA-Z0-9_]+)*\.v1/}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Role">
+					description = <"A function that actors perform, such as care provider, patient or administrator, with the capabilities that come with it.">
+				>
+				["at0001"] = <
+					text = <"Details">
+					description = <"Data about the role.">
+				>
+				["at0002"] = <
+					text = <"Role code">
+					description = <"A code or name for the function.">
+					comment = <"Coding is preferred, for example with the FHIR practitioner-role codes, a SNOMED CT occupation or a local code. Corresponds to FHIR PractitionerRole.code.">
+				>
+				["at0003"] = <
+					text = <"Specialty">
+					description = <"A specialty within the function.">
+					comment = <"Corresponds to FHIR PractitionerRole.specialty.">
+				>
+				["at0004"] = <
+					text = <"Description">
+					description = <"A description of the function.">
+				>
+				["at0005"] = <
+					text = <"Identifier">
+					description = <"An identifier of the role, such as its code in another system.">
+				>
+				["at0006"] = <
+					text = <"Active">
+					description = <"Whether the role is in use.">
+					comment = <"Corresponds to FHIR PractitionerRole.active. The period of validity is the ROLE's time_validity.">
+				>
+				["at0007"] = <
+					text = <"Additional details">
+					description = <"Further details about the role that a particular use needs.">
+				>
+				["at0008"] = <
+					text = <"Role name">
+					description = <"The name by which the role is known.">
+				>
+				["at0009"] = <
+					text = <"Name details">
+					description = <"The name.">
+				>
+				["at0010"] = <
+					text = <"Name">
+					description = <"The name of the role, as it is displayed.">
+				>
+				["at0011"] = <
+					text = <"Capability">
+					description = <"Something an actor in the role is permitted or able to do.">
+					comment = <"The name of the CAPABILITY is the capability. Its time_validity is the period in which it holds.">
+				>
+				["at0012"] = <
+					text = <"Credentials">
+					description = <"What the capability grants and requires.">
+				>
+				["at0013"] = <
+					text = <"Permission">
+					description = <"A permission the capability grants, such as an access scope.">
+					comment = <"For example a SMART on openEHR scope, or a local permission code.">
+				>
+				["at0014"] = <
+					text = <"Required qualification">
+					description = <"A qualification an actor needs to exercise the capability.">
+				>
+				["at0015"] = <
+					text = <"Description">
+					description = <"A description of the capability.">
+				>
+				["at0016"] = <
+					text = <"Contact">
+					description = <"A group of addresses at which the party can be reached for one purpose, with the period in which they are valid.">
+				>
+				["at0017"] = <
+					text = <"Electronic communication">
+					description = <"An electronic address, such as a telephone number, an email address or a URL.">
+				>
+				["at0018"] = <
+					text = <"Electronic communication details">
+					description = <"The structure that holds the electronic address.">
+				>
+				["at0019"] = <
+					text = <"Electronic communication">
+					description = <"The electronic address.">
+				>
+			>
+		>
+	>

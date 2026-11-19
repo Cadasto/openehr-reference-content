@@ -1,0 +1,78 @@
+archetype (adl_version=1.4; uid=c37cec06-3a25-4b3a-b811-3a7ed9ccdbd4)
+	openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1
+
+concept
+	[at0000]	-- Role assignment
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record that an actor holds a role, such as care provider or patient, for a period.">
+			use = <"Use in the actor's party, with the actor as source and a ROLE as target, where a service keeps one ROLE per function and records who holds it. The relationship is held by its source party and versioned with it; its time_validity is the period in which it is active. The archetype id is the relationship's type.">
+			keywords = <"role assignment", "role", "function", "practitioner role">
+			misuse = <"Not where each ROLE names its own performer: the ROLE's performer already says who holds it.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"Aligned with the HL7 FHIR R4 (4.0.1) resource PractitionerRole: its practitioner, code, specialty and period (https://hl7.org/fhir/R4/).">
+	>
+
+definition
+	PARTY_RELATIONSHIP[at0000] matches {	-- Role assignment
+		details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {	-- Details
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0002] occurrences matches {0..*} matches {	-- Specialty
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0003] occurrences matches {0..1} matches {	-- Comment
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+				}
+			}
+		}
+		target matches {
+			PARTY_REF matches {
+				type matches {"ROLE"}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Role assignment">
+					description = <"The source actor holds the target role.">
+				>
+				["at0001"] = <
+					text = <"Details">
+					description = <"Data about the relationship.">
+				>
+				["at0002"] = <
+					text = <"Specialty">
+					description = <"The specialty in which the actor holds the role.">
+					comment = <"Corresponds to FHIR PractitionerRole.specialty.">
+				>
+				["at0003"] = <
+					text = <"Comment">
+					description = <"A note about the assignment.">
+				>
+			>
+		>
+	>

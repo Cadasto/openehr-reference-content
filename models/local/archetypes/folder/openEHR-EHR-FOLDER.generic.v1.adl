@@ -1,0 +1,51 @@
+archetype (adl_version=1.4; uid=335b7782-4722-4d80-bb13-259da8f06eea)
+	openEHR-EHR-FOLDER.generic.v1
+
+concept
+	[at0000]	-- Folder
+language
+	original_language = <[ISO_639-1::en]>
+
+description
+	original_author = <
+		["name"] = <"openehr-reference-content">
+		["date"] = <"2026-11-19">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To give a FOLDER the archetype id a CDR gives it by default, with any ITEM_TREE as its details, and any sub-folders and items.">
+			use = <"Use for a folder of an EHR's directory, or of a demographic service's, that needs no structure beyond the Reference Model's.">
+			keywords = <"folder", "directory", "episode", "grouping">
+			misuse = <"Not where a folder's details, sub-folders or items have a structure of their own: specialise this archetype or author another.">
+			copyright = <"© openehr-reference-content contributors">
+		>
+	>
+	lifecycle_state = <"in_development">
+	other_details = <
+		["licence"] = <"This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.">
+		["references"] = <"CKM publishes no archetype for this class. The archetype id is the one EHRbase gives an instance of it by default, so a template on it validates what a CDR creates.">
+	>
+
+definition
+	FOLDER[at0000] matches {	-- Folder
+		details existence matches {0..1} matches {
+			ITEM_TREE[at0001] occurrences matches {1..1} matches {*}	-- Details
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Folder">
+					description = <"A folder that groups versioned items of an EHR, and further folders.">
+				>
+				["at0001"] = <
+					text = <"Details">
+					description = <"Further details about the folder, as a tree of items.">
+				>
+			>
+		>
+	>
