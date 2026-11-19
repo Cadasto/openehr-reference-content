@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 """The reference archetypes and the operational templates built from them."""
 from aom import (A, ITEMS, C, CODED, DV, E, SLOT, CKM_SLOT, PARTY_REF, STAR, Archetype,
-                 begin_terms, end_terms, instantiate, find, drop, occurrences, existence,
-                 fill, date_pattern, close_slots)
+                 begin_terms, end_terms, instantiate, drop, occurrences, existence,
+                 fill, date_pattern)
 
 REL = r"openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.%s(-[a-zA-Z0-9_]+)*\.v1"
 ANY_CLUSTER = r".*"
