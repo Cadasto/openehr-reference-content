@@ -7,11 +7,13 @@ PYTHON ?= python3
 GO ?= go
 GENERATOR = PYTHONDONTWRITEBYTECODE=1 $(PYTHON) tools/generator/build.py
 
-.PHONY: help generate check sync test vet fmt-check ci
+.PHONY: help generate examples check sync test vet fmt-check ci
 
 help:
 	@printf '%s\n' \
 	  'make generate    write the archetypes and templates from tools/generator/content.py' \
+	  'make examples    write the example instance of each template, generated with openehr-sdk-go,' \
+	  '                 to tech/templates/{template-id}/instances/{template-id}.json' \
 	  'make check       fail when a generated file differs from what the generator writes,' \
 	  '                 or a vendored CKM file from its pin in models/remote/org.openehr/MANIFEST.txt' \
 	  'make sync        fetch the pinned CKM clusters again and rewrite MANIFEST.txt (network)' \
@@ -22,6 +24,9 @@ help:
 
 generate:
 	@$(GENERATOR)
+
+examples:
+	cd conformance && $(GO) test -count=1 -run '^TestExampleInstancesAreCurrent$$' . -args -update
 
 check:
 	@$(GENERATOR) --check

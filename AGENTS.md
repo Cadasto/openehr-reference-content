@@ -12,6 +12,7 @@ A standard-library-only Go package (`reference`, the root module) embeds the tem
 
 ```sh
 make generate   # write models/local/archetypes/** and tech/templates/*/opt/*.opt from content.py
+make examples   # write tech/templates/*/instances/*.json, each template's example instance, with openehr-sdk-go
 make check      # fail when a generated file differs from content.py, or a CKM file from its MANIFEST pin
 make ci         # check + gofmt + go vet + go test of both modules: what CI runs
 make sync       # re-fetch the pinned CKM clusters (network); review the diff, then make generate
@@ -28,22 +29,23 @@ cd conformance && go test -run TestDemographicTemplatesRefuseWhatTheyKeepOut ./.
 | `models/local/archetypes/{class}/` | Generated ADL; `demographic/` for DEMOGRAPHIC archetypes, else the RM class (`ehr_status/`, `folder/`) | No |
 | `models/remote/org.openehr/` | CKM exports, pinned by sha256 in `MANIFEST.txt` | No: `make sync` |
 | `tech/templates/{id}/opt/{id}.opt` | Generated OPTs, one folder per template id | No |
+| `tech/templates/{id}/instances/{id}.json` | The template's example instance, generated with the SDK | No: `make examples` |
 | `reference.go`, `doc.go` | The Go package: id constants, `TemplateIDs`, `OPT` | Yes |
 | `reference_test.go` | sha256 pin of every template | Yes, with every template change |
 | `conformance/` | SDK checks: strict compile, generate and validate, refusals | Yes |
 
 ## Rules
 
-- **Never edit generated or vendored files.** Change `content.py` and run `make generate`; `make check` fails on any hand edit.
+- **Never edit generated or vendored files.** Change `content.py`, run `make generate`, then `make examples`; `make check` fails on a hand edit of an archetype or a template, and `make ci` on a hand edit of an example.
 - **A template id never starts refusing an instance it accepted.** A narrowing change ships under a new id (`.v2`) beside the old one, which stays. Any change to a template's bytes moves its pin in `reference_test.go` and adds a line to `CHANGELOG.md` under `[Unreleased]`.
 - **Archetype paths are stable.** Never renumber or reuse an at-code; removing a node or narrowing a constraint needs a new major version (`.v2`).
 - **Templates only narrow.** Use the operations in `aom.py` (`drop`, `occurrences`, `existence`, `fill`, `date_pattern`, `keep_open`); `occurrences` refuses a widening, and `close_slots` closes every slot a template leaves unfilled, except one it keeps open with `keep_open`, which the OPT holds as an `ARCHETYPE_SLOT`.
-- **A new template** needs: an entry in `content.TEMPLATES` with a fresh uuid4, a constant in `reference.go`, a pin in `reference_test.go`, its root in `roots` in `conformance/conformance_test.go`, a row in the README's table, and a CHANGELOG line. The tests fail until the constant, the pin and the root are there; the README row and the CHANGELOG line are yours to add.
+- **A new template** needs: an entry in `content.TEMPLATES` with a fresh uuid4, a constant in `reference.go`, a pin in `reference_test.go`, its root in `roots` in `conformance/conformance_test.go`, its example (`make examples`), a row in the README's table, and a CHANGELOG line. The tests fail until the constant, the pin, the root and the example are there; the README row and the CHANGELOG line are yours to add.
 - **A new CKM archetype** goes in `CKM_CLUSTERS` in `build.py`, then `make sync` writes it and its pin; credit it in `ATTRIBUTION.md`.
 - **Demographic modelling** follows [`docs/design/demographic-model.md`](docs/design/demographic-model.md): names are PARTY_IDENTITYs, identifiers go in details as DV_IDENTIFIER, a relationship is held by its source (the smaller party), its archetype id is its type and its PARTY_REF type list constrains the target, a GROUP is only ever a target.
 - **Coded lists** mirror an HL7 FHIR R4 value set one to one as local codes, with the FHIR code in each code's description; each element's comment names the FHIR element it corresponds to.
 - **The root Go module imports only the standard library.** Never add the SDK to the root `go.mod`; it belongs to `conformance/`, which reaches the root module through `replace ../`. Move the SDK pin with `cd conformance && go get github.com/cadasto/openehr-sdk-go@<ref> && go mod tidy`.
-- **Each `tech/templates/{id}/` holds exactly `opt/{id}.opt`**, which the `go:embed` pattern and `TestTemplateIDsListEveryFolder` rely on.
+- **Each `tech/templates/{id}/` holds `opt/{id}.opt`**, which the `go:embed` pattern and `TestTemplateIDsListEveryFolder` rely on, **and `instances/{id}.json`**, its example, which `TestExampleInstancesAreCurrent` checks.
 
 ## Platform floor
 

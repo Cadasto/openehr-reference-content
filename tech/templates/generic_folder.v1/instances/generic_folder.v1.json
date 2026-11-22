@@ -1,0 +1,42 @@
+{
+  "_type": "FOLDER",
+  "archetype_details": {
+    "_type": "ARCHETYPED",
+    "archetype_id": {
+      "_type": "ARCHETYPE_ID",
+      "value": "openEHR-EHR-FOLDER.generic.v1"
+    },
+    "rm_version": "1.2.0",
+    "template_id": {
+      "_type": "TEMPLATE_ID",
+      "value": "generic_folder.v1"
+    }
+  },
+  "archetype_node_id": "openEHR-EHR-FOLDER.generic.v1",
+  "details": {
+    "_type": "ITEM_TREE",
+    "archetype_node_id": "at0001",
+    "items": [
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0101",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Note"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "A note."
+        }
+      }
+    ],
+    "name": {
+      "_type": "DV_TEXT",
+      "value": "Details"
+    }
+  },
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "Folder"
+  }
+}

@@ -6,6 +6,10 @@ A template id never starts refusing an instance it accepted before: a change tha
 
 ## [Unreleased]
 
+### Added
+
+- **Examples:** an example instance of each template in canonical JSON, `tech/templates/{template-id}/instances/{template-id}.json`, generated with openehr-sdk-go by `make examples` and checked against its template by `make ci`.
+
 ### Changed
 
 - **Templates:** `generic_ehr_status.v1` and `generic_folder.v1` accept more: their other details and details may now be an ITEM_TREE defined by an archetype as well as a plain one, and they still accept every instance they accepted, so a consumer that stored a copy should replace it ([#1](https://github.com/Cadasto/openehr-reference-content/issues/1)).

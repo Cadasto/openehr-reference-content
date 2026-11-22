@@ -2,8 +2,9 @@
 
 // Package conformance_test checks every template the module ships with the
 // openEHR SDK for Go: each reads and compiles strictly, every instance the
-// SDK generates from it validates against it, and each refuses what it
-// promises to keep out (refusals_test.go, item_tree_test.go).
+// SDK generates from it validates against it, each refuses what it promises
+// to keep out (refusals_test.go, item_tree_test.go), and its stored example
+// instance is current and validates (examples_test.go).
 package conformance_test
 
 import (
