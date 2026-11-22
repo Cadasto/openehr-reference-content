@@ -14,10 +14,10 @@ description
 	details = <
 		["en"] = <
 			language = <[ISO_639-1::en]>
-			purpose = <"To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details.">
+			purpose = <"To give an EHR_STATUS the archetype id a CDR gives it by default, with any item structure as its other details: a tree, a list, a single item or a table, plain or defined by an archetype.">
 			use = <"Use for the EHR_STATUS of an EHR that needs no structure beyond the Reference Model's: its subject, whether it is queryable and modifiable, and other details left open.">
 			keywords = <"EHR status", "subject", "queryable", "modifiable">
-			misuse = <"Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details have a structure of their own: specialise this archetype or author another.">
+			misuse = <"Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details must follow one structure: fill a slot with that structure's archetype in a template, or specialise this archetype.">
 			copyright = <"© openehr-reference-content contributors">
 		>
 	>
@@ -30,7 +30,26 @@ description
 definition
 	EHR_STATUS[at0000] matches {	-- EHR Status
 		other_details existence matches {0..1} matches {
-			ITEM_TREE[at0001] occurrences matches {1..1} matches {*}	-- Other details
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {*}	-- Other details
+			allow_archetype ITEM_TREE[at0002] occurrences matches {0..1} matches {	-- Archetyped other details tree
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_TREE\..+/}
+			}
+			ITEM_LIST[at0003] occurrences matches {0..1} matches {*}	-- Other details list
+			allow_archetype ITEM_LIST[at0004] occurrences matches {0..1} matches {	-- Archetyped other details list
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_LIST\..+/}
+			}
+			ITEM_SINGLE[at0005] occurrences matches {0..1} matches {*}	-- Other details single item
+			allow_archetype ITEM_SINGLE[at0006] occurrences matches {0..1} matches {	-- Archetyped other details single item
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_SINGLE\..+/}
+			}
+			ITEM_TABLE[at0007] occurrences matches {0..1} matches {*}	-- Other details table
+			allow_archetype ITEM_TABLE[at0008] occurrences matches {0..1} matches {	-- Archetyped other details table
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_TABLE\..+/}
+			}
 		}
 	}
 
@@ -45,6 +64,34 @@ ontology
 				["at0001"] = <
 					text = <"Other details">
 					description = <"Further details about the EHR status, as a tree of items.">
+				>
+				["at0002"] = <
+					text = <"Archetyped other details tree">
+					description = <"Further details about the EHR status, as a tree of items that an archetype defines.">
+				>
+				["at0003"] = <
+					text = <"Other details list">
+					description = <"Further details about the EHR status, as a list of elements.">
+				>
+				["at0004"] = <
+					text = <"Archetyped other details list">
+					description = <"Further details about the EHR status, as a list of elements that an archetype defines.">
+				>
+				["at0005"] = <
+					text = <"Other details single item">
+					description = <"Further details about the EHR status, as a single element.">
+				>
+				["at0006"] = <
+					text = <"Archetyped other details single item">
+					description = <"Further details about the EHR status, as a single element that an archetype defines.">
+				>
+				["at0007"] = <
+					text = <"Other details table">
+					description = <"Further details about the EHR status, as a table of rows.">
+				>
+				["at0008"] = <
+					text = <"Archetyped other details table">
+					description = <"Further details about the EHR status, as a table of rows that an archetype defines.">
 				>
 			>
 		>
