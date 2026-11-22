@@ -6,6 +6,8 @@ A template id never starts refusing an instance it accepted before: a change tha
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-22
+
 ### Added
 
 - **Examples:** an example instance of each template in canonical JSON, `tech/templates/{template-id}/instances/{template-id}.json`, generated with openehr-sdk-go by `make examples` and checked against its template by `make ci`.
@@ -27,5 +29,6 @@ A template id never starts refusing an instance it accepted before: a change tha
 - **Go module:** package `reference` embeds the templates (`TemplateIDs`, `OPT`) with no dependency outside the standard library.
 - **Tooling:** the generator under `tools/generator/`, `make generate`, `make check`, `make sync`, `make ci`, and the `conformance` module that checks every template with openehr-sdk-go.
 
-[Unreleased]: https://github.com/Cadasto/openehr-reference-content/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Cadasto/openehr-reference-content/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Cadasto/openehr-reference-content/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Cadasto/openehr-reference-content/releases/tag/v0.1.0
