@@ -26,17 +26,17 @@ import (
 // unchanged, and expects the validator to refuse it at the node that breaks
 // it.
 
-// generatedParty is a party the SDK generates from the template under the
-// Large policy, as a canonical JSON object to mutate.
-func generatedParty(t *testing.T, c *templatecompile.Compiled) map[string]any {
+// generatedJSON is the instance the SDK generates from the template under
+// policy, as a canonical JSON object to mutate.
+func generatedJSON(t *testing.T, c *templatecompile.Compiled, policy instance.Policy) map[string]any {
 	t.Helper()
 	v, err := instance.Generate(t.Context(), c, instance.Options{
-		Policy:    instance.Large,
+		Policy:    policy,
 		Now:       time.Date(2026, 11, 19, 12, 0, 0, 0, time.UTC),
 		UIDSource: instance.UIDsFrom(rand.NewPCG(1, 2)),
 	})
 	if err != nil {
-		t.Fatalf("Generate(%s): %v", c.TemplateID(), err)
+		t.Fatalf("Generate(%s, %s): %v", c.TemplateID(), policy, err)
 	}
 	b, err := canjson.Marshal(v)
 	if err != nil {
@@ -108,7 +108,7 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		compiled[id] = mustTemplate(t, id)
 	}
 	// A fresh copy of each template's generated party, for one case to change.
-	party := func(id string) map[string]any { return generatedParty(t, compiled[id]) }
+	party := func(id string) map[string]any { return generatedJSON(t, compiled[id], instance.Large) }
 
 	tests := []struct {
 		name     string
