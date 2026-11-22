@@ -7,6 +7,7 @@ A clinical data repository installs them to create, build and validate these ins
 ## Get the templates
 
 Each template is one XML file, [`tech/templates/{template-id}/opt/{template-id}.opt`](tech/templates/), ready to upload to a CDR through the openEHR REST API (`POST /definition/template/adl1.4`).
+Beside it, `tech/templates/{template-id}/instances/{template-id}.json` is an example instance in canonical JSON, generated from the template with openehr-sdk-go, for reference.
 
 A Go program can embed them instead, with no dependency outside the standard library:
 
@@ -27,8 +28,8 @@ Compile a document with the openEHR SDK of your choice, for example [openehr-sdk
 
 | Template id | Root | What it holds |
 |---|---|---|
-| `generic_ehr_status.v1` | EHR_STATUS | The archetype id a CDR gives an EHR_STATUS by default, `openEHR-EHR-EHR_STATUS.generic.v1`, with any other details |
-| `generic_folder.v1` | FOLDER | The default `openEHR-EHR-FOLDER.generic.v1`, with any details, sub-folders and items |
+| `generic_ehr_status.v1` | EHR_STATUS | The archetype id a CDR gives an EHR_STATUS by default, `openEHR-EHR-EHR_STATUS.generic.v1`, with an ITEM_TREE as other details, plain or defined by an archetype |
+| `generic_folder.v1` | FOLDER | The default `openEHR-EHR-FOLDER.generic.v1`, with an ITEM_TREE as details, plain or defined by an archetype, and any sub-folders and items |
 | `PERSON-Patient.v1` | PERSON | A patient that names no one: identifiers such as a patient number or a pseudonym, the year of birth, administrative gender, whether the patient died; care relationships and role assignments |
 | `PERSON-PatientIdentity.v1` | PERSON | Who a patient is: names, identifiers, date of birth, gender, death, marital status, addresses, telecom, languages, contact persons |
 | `PERSON-CareProvider.v1` | PERSON | A care provider: names, identifiers, qualifications, contacts, languages; memberships and role assignments |
@@ -58,6 +59,7 @@ The layout follows the [freshEHR](https://github.com/freshehrteam/_-freshEHR-pro
 | `models/local/archetypes/{class}/` | The archetypes this repository authors, ADL 1.4 |
 | `models/remote/org.openehr/` | Published CKM archetypes the templates embed, as CKM exports them, pinned by sha256 |
 | `tech/templates/{template-id}/opt/` | The operational templates |
+| `tech/templates/{template-id}/instances/` | An example instance of each template, generated with openehr-sdk-go |
 | `docs/design/`, `docs/reference/` | Design notes and sources |
 | `tools/generator/` | The generator that writes every archetype and template from one definition, `content.py` |
 | `conformance/` | A Go module that checks every template with openehr-sdk-go |
@@ -65,10 +67,11 @@ The layout follows the [freshEHR](https://github.com/freshehrteam/_-freshEHR-pro
 
 ## Development
 
-The archetypes and templates are generated: change [`tools/generator/content.py`](tools/generator/content.py) and run `make generate`, never edit the files by hand.
+The archetypes and templates are generated: change [`tools/generator/content.py`](tools/generator/content.py), run `make generate`, then `make examples`, and never edit the files by hand.
 
 ```sh
 make generate   # write the archetypes and templates
+make examples   # write each template's example instance, with openehr-sdk-go
 make ci         # what CI runs: generated files and CKM pins, gofmt, go vet, the tests of both modules
 make sync       # fetch the pinned CKM clusters again (network)
 ```

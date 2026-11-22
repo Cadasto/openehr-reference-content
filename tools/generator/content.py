@@ -2,7 +2,7 @@
 """The reference archetypes and the operational templates built from them."""
 from aom import (A, ITEMS, C, CODED, DV, E, SLOT, CKM_SLOT, PARTY_REF, STAR, Archetype,
                  begin_terms, end_terms, instantiate, drop, occurrences, existence,
-                 fill, date_pattern)
+                 fill, date_pattern, keep_open)
 
 REL = r"openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.%s(-[a-zA-Z0-9_]+)*\.v1"
 ANY_CLUSTER = r".*"
@@ -83,18 +83,28 @@ _GENERIC_REFERENCES = ("CKM publishes no archetype for this class. The archetype
                        "instance of it by default, so a template on it validates what a CDR creates.")
 
 
+def _any_item_tree(text, about):
+    """The details of an EHR_STATUS or a FOLDER: an ITEM_TREE, either open (at0001) or one
+    an archetype defines (the slot at0002)."""
+    return [
+        C("ITEM_TREE", "at0001", text, "Further details about the %s, as a tree of items." % about, occ=(0, 1)),
+        SLOT("ITEM_TREE", "at0002", "Archetyped %s" % text.lower(),
+             "Further details about the %s, as a tree of items that an archetype defines." % about,
+             [r"openEHR-EHR-ITEM_TREE\..+"]),
+    ]
+
+
 def _ehr_status():
     return C("EHR_STATUS", "at0000", "EHR Status",
              "The status of an EHR: its subject, whether it may be queried and modified, and other details.", [
-        A("other_details", [C("ITEM_TREE", "at0001", "Other details",
-                              "Further details about the EHR status, as a tree of items.")], existence=(0, 1)),
+        A("other_details", _any_item_tree("Other details", "EHR status"), existence=(0, 1)),
     ])
 
 
 EHR_STATUS = archetype("openEHR-EHR-EHR_STATUS.generic.v1", "f06767d8-6671-404e-b273-73728ea33e96", _ehr_status, {
-    "purpose": "To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details.",
+    "purpose": "To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details, plain or defined by an archetype.",
     "use": "Use for the EHR_STATUS of an EHR that needs no structure beyond the Reference Model's: its subject, whether it is queryable and modifiable, and other details left open.",
-    "misuse": "Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details have a structure of their own: specialise this archetype or author another.",
+    "misuse": "Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details must follow one structure: fill the slot with that structure's ITEM_TREE archetype in a template, or specialise this archetype.",
     "keywords": ["EHR status", "subject", "queryable", "modifiable"],
     "references": _GENERIC_REFERENCES,
 })
@@ -103,15 +113,14 @@ EHR_STATUS = archetype("openEHR-EHR-EHR_STATUS.generic.v1", "f06767d8-6671-404e-
 def _folder():
     return C("FOLDER", "at0000", "Folder",
              "A folder that groups versioned items of an EHR, and further folders.", [
-        A("details", [C("ITEM_TREE", "at0001", "Details",
-                        "Further details about the folder, as a tree of items.")], existence=(0, 1)),
+        A("details", _any_item_tree("Details", "folder"), existence=(0, 1)),
     ])
 
 
 FOLDER = archetype("openEHR-EHR-FOLDER.generic.v1", "335b7782-4722-4d80-bb13-259da8f06eea", _folder, {
-    "purpose": "To give a FOLDER the archetype id a CDR gives it by default, with any ITEM_TREE as its details, and any sub-folders and items.",
+    "purpose": "To give a FOLDER the archetype id a CDR gives it by default, with any ITEM_TREE as its details, plain or defined by an archetype, and any sub-folders and items.",
     "use": "Use for a folder of an EHR's directory, or of a demographic service's, that needs no structure beyond the Reference Model's.",
-    "misuse": "Not where a folder's details, sub-folders or items have a structure of their own: specialise this archetype or author another.",
+    "misuse": "Not where a folder's details must follow one structure: fill the slot with that structure's ITEM_TREE archetype in a template, or specialise this archetype. Not where its sub-folders or items have a structure of their own: specialise this archetype or author another.",
     "keywords": ["folder", "directory", "episode", "grouping"],
     "references": _GENERIC_REFERENCES,
 })
@@ -676,11 +685,15 @@ def _fill_electronic(t, contact, address, tree, slot):
 
 
 def generic_ehr_status():
-    return instantiate(EHR_STATUS)
+    t = instantiate(EHR_STATUS)
+    keep_open(t, "/other_details[at0002]")
+    return t
 
 
 def generic_folder():
-    return instantiate(FOLDER)
+    t = instantiate(FOLDER)
+    keep_open(t, "/details[at0002]")
+    return t
 
 
 def patient():
@@ -773,15 +786,15 @@ CKM = {}  # name -> Archetype, loaded by the build
 
 TEMPLATES = [
     ("generic_ehr_status.v1", "70c19cf1-96fe-40ea-ae17-e7effd31896b", "Generic EHR status", generic_ehr_status, {
-        "purpose": "A generic EHR status: the archetype id openEHR-EHR-EHR_STATUS.generic.v1, which CDRs give an EHR_STATUS by default, with any ITEM_TREE as its other details.",
+        "purpose": "A generic EHR status: the archetype id openEHR-EHR-EHR_STATUS.generic.v1, which CDRs give an EHR_STATUS by default, with any ITEM_TREE as its other details, plain or defined by an archetype.",
         "use": "Install it on a CDR whose EHRs carry a default EHR_STATUS, to build a default one, and to validate an EHR_STATUS that names it.",
-        "misuse": "Not where the other details have a structure of their own: use a template that constrains them.",
+        "misuse": "Not where the other details must follow one structure: use a template that constrains them.",
         "keywords": ["EHR status", "default"],
     }),
     ("generic_folder.v1", "be12920b-8f93-4839-a0aa-2d1efbb23035", "Generic folder", generic_folder, {
-        "purpose": "A generic folder: the archetype id openEHR-EHR-FOLDER.generic.v1, with any ITEM_TREE as its details, and any sub-folders and items.",
+        "purpose": "A generic folder: the archetype id openEHR-EHR-FOLDER.generic.v1, with any ITEM_TREE as its details, plain or defined by an archetype, and any sub-folders and items.",
         "use": "Install it on a CDR whose EHRs carry folders with no structure of their own, to build a default folder, and to validate a FOLDER that names it.",
-        "misuse": "Not where a folder's details, sub-folders or items have a structure of their own: use a template that constrains them.",
+        "misuse": "Not where a folder's details must follow one structure, or its sub-folders or items have a structure of their own: use a template that constrains them.",
         "keywords": ["folder", "directory", "default"],
     }),
     ("PERSON-Patient.v1", "1c86b6b3-ea97-4c33-9846-c38f16085e54", "Patient", patient, {

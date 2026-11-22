@@ -2,8 +2,9 @@
 
 // Package conformance_test checks every template the module ships with the
 // openEHR SDK for Go: each reads and compiles strictly, every instance the
-// SDK generates from it validates against it, and each refuses what it
-// promises to keep out (refusals_test.go).
+// SDK generates from it validates against it, each refuses what it promises
+// to keep out (refusals_test.go, item_tree_test.go), and its stored example
+// instance is current and validates (examples_test.go).
 package conformance_test
 
 import (
@@ -36,6 +37,30 @@ var roots = map[string]struct{ rmType, archetypeID string }{
 	reference.CareTeamTemplateID:        {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.care_team.v1"},
 	reference.OrganisationTemplateID:    {"ORGANISATION", "openEHR-DEMOGRAPHIC-ORGANISATION.generic_organisation.v1"},
 	reference.GroupTemplateID:           {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.generic_group.v1"},
+}
+
+// newRoot is an empty value of the RM class rmType, for
+// validation.ValidateJSON to decode a document into.
+func newRoot(t *testing.T, rmType string) any {
+	t.Helper()
+	switch rmType {
+	case "EHR_STATUS":
+		return &rm.EHRStatus{}
+	case "FOLDER":
+		return &rm.Folder{}
+	case "PERSON":
+		return &rm.Person{}
+	case "ROLE":
+		return &rm.Role{}
+	case "AGENT":
+		return &rm.Agent{}
+	case "GROUP":
+		return &rm.Group{}
+	case "ORGANISATION":
+		return &rm.Organisation{}
+	}
+	t.Fatalf("newRoot(%q): no value for this RM class: add it", rmType)
+	return nil
 }
 
 func document(t *testing.T, id string) []byte {

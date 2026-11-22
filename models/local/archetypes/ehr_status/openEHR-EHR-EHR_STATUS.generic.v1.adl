@@ -14,10 +14,10 @@ description
 	details = <
 		["en"] = <
 			language = <[ISO_639-1::en]>
-			purpose = <"To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details.">
+			purpose = <"To give an EHR_STATUS the archetype id a CDR gives it by default, with any ITEM_TREE as its other details, plain or defined by an archetype.">
 			use = <"Use for the EHR_STATUS of an EHR that needs no structure beyond the Reference Model's: its subject, whether it is queryable and modifiable, and other details left open.">
 			keywords = <"EHR status", "subject", "queryable", "modifiable">
-			misuse = <"Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details have a structure of their own: specialise this archetype or author another.">
+			misuse = <"Not for data about the patient: record clinical data in compositions and who the patient is in a demographic service. Not where the other details must follow one structure: fill the slot with that structure's ITEM_TREE archetype in a template, or specialise this archetype.">
 			copyright = <"© openehr-reference-content contributors">
 		>
 	>
@@ -30,7 +30,11 @@ description
 definition
 	EHR_STATUS[at0000] matches {	-- EHR Status
 		other_details existence matches {0..1} matches {
-			ITEM_TREE[at0001] occurrences matches {1..1} matches {*}	-- Other details
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {*}	-- Other details
+			allow_archetype ITEM_TREE[at0002] occurrences matches {0..1} matches {	-- Archetyped other details
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_TREE\..+/}
+			}
 		}
 	}
 
@@ -45,6 +49,10 @@ ontology
 				["at0001"] = <
 					text = <"Other details">
 					description = <"Further details about the EHR status, as a tree of items.">
+				>
+				["at0002"] = <
+					text = <"Archetyped other details">
+					description = <"Further details about the EHR status, as a tree of items that an archetype defines.">
 				>
 			>
 		>

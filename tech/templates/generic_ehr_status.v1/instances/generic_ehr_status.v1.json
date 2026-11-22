@@ -1,0 +1,47 @@
+{
+  "_type": "EHR_STATUS",
+  "archetype_details": {
+    "_type": "ARCHETYPED",
+    "archetype_id": {
+      "_type": "ARCHETYPE_ID",
+      "value": "openEHR-EHR-EHR_STATUS.generic.v1"
+    },
+    "rm_version": "1.2.0",
+    "template_id": {
+      "_type": "TEMPLATE_ID",
+      "value": "generic_ehr_status.v1"
+    }
+  },
+  "archetype_node_id": "openEHR-EHR-EHR_STATUS.generic.v1",
+  "is_modifiable": true,
+  "is_queryable": true,
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "EHR Status"
+  },
+  "other_details": {
+    "_type": "ITEM_TREE",
+    "archetype_node_id": "at0001",
+    "items": [
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0101",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Note"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "A note."
+        }
+      }
+    ],
+    "name": {
+      "_type": "DV_TEXT",
+      "value": "Other details"
+    }
+  },
+  "subject": {
+    "_type": "PARTY_SELF"
+  }
+}

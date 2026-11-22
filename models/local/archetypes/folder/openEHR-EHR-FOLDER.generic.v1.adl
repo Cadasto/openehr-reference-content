@@ -14,10 +14,10 @@ description
 	details = <
 		["en"] = <
 			language = <[ISO_639-1::en]>
-			purpose = <"To give a FOLDER the archetype id a CDR gives it by default, with any ITEM_TREE as its details, and any sub-folders and items.">
+			purpose = <"To give a FOLDER the archetype id a CDR gives it by default, with any ITEM_TREE as its details, plain or defined by an archetype, and any sub-folders and items.">
 			use = <"Use for a folder of an EHR's directory, or of a demographic service's, that needs no structure beyond the Reference Model's.">
 			keywords = <"folder", "directory", "episode", "grouping">
-			misuse = <"Not where a folder's details, sub-folders or items have a structure of their own: specialise this archetype or author another.">
+			misuse = <"Not where a folder's details must follow one structure: fill the slot with that structure's ITEM_TREE archetype in a template, or specialise this archetype. Not where its sub-folders or items have a structure of their own: specialise this archetype or author another.">
 			copyright = <"© openehr-reference-content contributors">
 		>
 	>
@@ -30,7 +30,11 @@ description
 definition
 	FOLDER[at0000] matches {	-- Folder
 		details existence matches {0..1} matches {
-			ITEM_TREE[at0001] occurrences matches {1..1} matches {*}	-- Details
+			ITEM_TREE[at0001] occurrences matches {0..1} matches {*}	-- Details
+			allow_archetype ITEM_TREE[at0002] occurrences matches {0..1} matches {	-- Archetyped details
+				include
+					archetype_id/value matches {/openEHR-EHR-ITEM_TREE\..+/}
+			}
 		}
 	}
 
@@ -45,6 +49,10 @@ ontology
 				["at0001"] = <
 					text = <"Details">
 					description = <"Further details about the folder, as a tree of items.">
+				>
+				["at0002"] = <
+					text = <"Archetyped details">
+					description = <"Further details about the folder, as a tree of items that an archetype defines.">
 				>
 			>
 		>

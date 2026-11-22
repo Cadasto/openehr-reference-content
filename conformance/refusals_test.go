@@ -13,7 +13,6 @@ import (
 
 	reference "github.com/cadasto/openehr-reference-content"
 	"github.com/cadasto/openehr-sdk-go/openehr/instance"
-	"github.com/cadasto/openehr-sdk-go/openehr/rm"
 	"github.com/cadasto/openehr-sdk-go/openehr/serialize/canjson"
 	"github.com/cadasto/openehr-sdk-go/openehr/templatecompile"
 	"github.com/cadasto/openehr-sdk-go/openehr/validation"
@@ -26,17 +25,17 @@ import (
 // unchanged, and expects the validator to refuse it at the node that breaks
 // it.
 
-// generatedParty is a party the SDK generates from the template under the
-// Large policy, as a canonical JSON object to mutate.
-func generatedParty(t *testing.T, c *templatecompile.Compiled) map[string]any {
+// generatedJSON is the instance the SDK generates from the template under
+// policy, as a canonical JSON object to mutate.
+func generatedJSON(t *testing.T, c *templatecompile.Compiled, policy instance.Policy) map[string]any {
 	t.Helper()
 	v, err := instance.Generate(t.Context(), c, instance.Options{
-		Policy:    instance.Large,
+		Policy:    policy,
 		Now:       time.Date(2026, 11, 19, 12, 0, 0, 0, time.UTC),
 		UIDSource: instance.UIDsFrom(rand.NewPCG(1, 2)),
 	})
 	if err != nil {
-		t.Fatalf("Generate(%s): %v", c.TemplateID(), err)
+		t.Fatalf("Generate(%s, %s): %v", c.TemplateID(), policy, err)
 	}
 	b, err := canjson.Marshal(v)
 	if err != nil {
@@ -97,18 +96,12 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		assignRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1"
 		partOfRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.part_of.v1"
 	)
-	roots := map[string]func() any{
-		patient: func() any { return &rm.Person{} }, identity: func() any { return &rm.Person{} },
-		provider: func() any { return &rm.Person{} }, role: func() any { return &rm.Role{} },
-		agent: func() any { return &rm.Agent{} }, careTeam: func() any { return &rm.Group{} },
-		org: func() any { return &rm.Organisation{} }, group: func() any { return &rm.Group{} },
-	}
 	compiled := map[string]*templatecompile.Compiled{}
-	for id := range roots {
+	for _, id := range []string{patient, identity, provider, role, agent, careTeam, org, group} {
 		compiled[id] = mustTemplate(t, id)
 	}
 	// A fresh copy of each template's generated party, for one case to change.
-	party := func(id string) map[string]any { return generatedParty(t, compiled[id]) }
+	party := func(id string) map[string]any { return generatedJSON(t, compiled[id], instance.Large) }
 
 	tests := []struct {
 		name     string
@@ -243,13 +236,13 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		},
 	}
 
-	for id, root := range roots {
+	for id, c := range compiled {
 		t.Run("generated "+id+" is accepted", func(t *testing.T) {
 			b, err := json.Marshal(party(id))
 			if err != nil {
 				t.Fatal(err)
 			}
-			if res := validation.ValidateJSON(b, root(), compiled[id]); !res.OK {
+			if res := validation.ValidateJSON(b, newRoot(t, roots[id].rmType), c); !res.OK {
 				t.Errorf("ValidateJSON(generated %s) refused it: %v", id, res.Issues)
 			}
 		})
@@ -262,7 +255,7 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			res := validation.ValidateJSON(b, roots[tc.template](), compiled[tc.template])
+			res := validation.ValidateJSON(b, newRoot(t, roots[tc.template].rmType), compiled[tc.template])
 			for _, is := range res.Issues {
 				if strings.Contains(is.Path, tc.wantPath) && is.Code == tc.wantCode {
 					return

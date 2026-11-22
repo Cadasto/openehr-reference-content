@@ -1,0 +1,661 @@
+{
+  "_type": "AGENT",
+  "archetype_details": {
+    "_type": "ARCHETYPED",
+    "archetype_id": {
+      "_type": "ARCHETYPE_ID",
+      "value": "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1"
+    },
+    "rm_version": "1.2.0",
+    "template_id": {
+      "_type": "TEMPLATE_ID",
+      "value": "AGENT-generic-agent.v1"
+    }
+  },
+  "archetype_node_id": "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1",
+  "contacts": [
+    {
+      "_type": "CONTACT",
+      "addresses": [
+        {
+          "_type": "ADDRESS",
+          "archetype_node_id": "at0026",
+          "details": {
+            "_type": "ITEM_TREE",
+            "archetype_node_id": "at0027",
+            "items": [
+              {
+                "_type": "CLUSTER",
+                "archetype_details": {
+                  "_type": "ARCHETYPED",
+                  "archetype_id": {
+                    "_type": "ARCHETYPE_ID",
+                    "value": "openEHR-EHR-CLUSTER.electronic_communication.v1"
+                  },
+                  "rm_version": "1.2.0"
+                },
+                "archetype_node_id": "openEHR-EHR-CLUSTER.electronic_communication.v1",
+                "items": [
+                  {
+                    "_type": "ELEMENT",
+                    "archetype_node_id": "at0001",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Type"
+                    },
+                    "value": {
+                      "_type": "DV_TEXT",
+                      "value": "Type"
+                    }
+                  },
+                  {
+                    "_type": "ELEMENT",
+                    "archetype_node_id": "at0002",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Value"
+                    },
+                    "value": {
+                      "_type": "DV_TEXT",
+                      "value": "Value"
+                    }
+                  },
+                  {
+                    "_type": "ELEMENT",
+                    "archetype_node_id": "at0003",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Purpose"
+                    },
+                    "value": {
+                      "_type": "DV_TEXT",
+                      "value": "Purpose"
+                    }
+                  },
+                  {
+                    "_type": "ELEMENT",
+                    "archetype_node_id": "at0004",
+                    "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Comment"
+                    },
+                    "value": {
+                      "_type": "DV_TEXT",
+                      "value": "Comment"
+                    }
+                  }
+                ],
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Electronic communication"
+                }
+              }
+            ],
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Electronic communication details"
+            }
+          },
+          "name": {
+            "_type": "DV_TEXT",
+            "value": "Electronic communication"
+          }
+        }
+      ],
+      "archetype_node_id": "at0025",
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Contact"
+      }
+    }
+  ],
+  "details": {
+    "_type": "ITEM_TREE",
+    "archetype_node_id": "at0001",
+    "items": [
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0002",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Identifier"
+        },
+        "value": {
+          "_type": "DV_IDENTIFIER",
+          "id": "ID-0001",
+          "issuer": "Example issuer"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0003",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Agent type"
+        },
+        "value": {
+          "_type": "DV_CODED_TEXT",
+          "defining_code": {
+            "_type": "CODE_PHRASE",
+            "code_string": "at0004",
+            "terminology_id": {
+              "_type": "TERMINOLOGY_ID",
+              "value": "local"
+            }
+          },
+          "value": "Software application"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0007",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Description"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "Description"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0008",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Manufacturer"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "Manufacturer"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0009",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Model"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "Model"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0010",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Version"
+        },
+        "value": {
+          "_type": "DV_TEXT",
+          "value": "Version"
+        }
+      },
+      {
+        "_type": "ELEMENT",
+        "archetype_node_id": "at0011",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Status"
+        },
+        "value": {
+          "_type": "DV_CODED_TEXT",
+          "defining_code": {
+            "_type": "CODE_PHRASE",
+            "code_string": "at0012",
+            "terminology_id": {
+              "_type": "TERMINOLOGY_ID",
+              "value": "local"
+            }
+          },
+          "value": "Active"
+        }
+      },
+      {
+        "_type": "CLUSTER",
+        "archetype_details": {
+          "_type": "ARCHETYPED",
+          "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-EHR-CLUSTER.device.v1"
+          },
+          "rm_version": "1.2.0"
+        },
+        "archetype_node_id": "openEHR-EHR-CLUSTER.device.v1",
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0001",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Device name"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Device name"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0003",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Type"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Type"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0002",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Description"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Description"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0021",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Unique device identifier (UDI)"
+            },
+            "value": {
+              "_type": "DV_IDENTIFIER",
+              "id": "ID-0001",
+              "issuer": "Example issuer"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0004",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Manufacturer"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Manufacturer"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0005",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Date of manufacture"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2026-11-19T12:00:00Z"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0020",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Serial number"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Serial number"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0022",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Catalogue number"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Catalogue number"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0023",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Model number"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Model number"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0006",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Batch/Lot number"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Batch/Lot number"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0025",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Software version"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Software version"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0007",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Date of expiry"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2026-11-19T12:00:00Z"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0024",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Other identifier"
+            },
+            "value": {
+              "_type": "DV_IDENTIFIER",
+              "id": "ID-0001",
+              "issuer": "Example issuer"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0008",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            }
+          }
+        ],
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Medical device"
+        }
+      }
+    ],
+    "name": {
+      "_type": "DV_TEXT",
+      "value": "Details"
+    }
+  },
+  "identities": [
+    {
+      "_type": "PARTY_IDENTITY",
+      "archetype_node_id": "at0018",
+      "details": {
+        "_type": "ITEM_TREE",
+        "archetype_node_id": "at0023",
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0024",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Name"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Name"
+            }
+          }
+        ],
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Name details"
+        }
+      },
+      "name": {
+        "_type": "DV_CODED_TEXT",
+        "defining_code": {
+          "_type": "CODE_PHRASE",
+          "code_string": "at0019",
+          "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "local"
+          }
+        },
+        "value": "User-friendly name"
+      }
+    }
+  ],
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "Agent"
+  },
+  "relationships": [
+    {
+      "_type": "PARTY_RELATIONSHIP",
+      "archetype_details": {
+        "_type": "ARCHETYPED",
+        "archetype_id": {
+          "_type": "ARCHETYPE_ID",
+          "value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.acting_on_behalf.v1"
+        },
+        "rm_version": "1.2.0"
+      },
+      "archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.acting_on_behalf.v1",
+      "details": {
+        "_type": "ITEM_TREE",
+        "archetype_node_id": "at0001",
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0002",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Basis"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Basis"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0003",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            }
+          }
+        ],
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Details"
+        }
+      },
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Acting on behalf"
+      },
+      "source": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "c8d04605-312f-4088-8bed-c0dcb63ac19a"
+        },
+        "namespace": "local",
+        "type": "PERSON"
+      },
+      "target": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "c4f5a586-56ee-4510-9dce-c3ad077dec6c"
+        },
+        "namespace": "local",
+        "type": "ORGANISATION"
+      }
+    },
+    {
+      "_type": "PARTY_RELATIONSHIP",
+      "archetype_details": {
+        "_type": "ARCHETYPED",
+        "archetype_id": {
+          "_type": "ARCHETYPE_ID",
+          "value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.party_membership.v1"
+        },
+        "rm_version": "1.2.0"
+      },
+      "archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.party_membership.v1",
+      "details": {
+        "_type": "ITEM_TREE",
+        "archetype_node_id": "at0001",
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0002",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Member role"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Member role"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0003",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            }
+          }
+        ],
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Details"
+        }
+      },
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Membership"
+      },
+      "source": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "7ffa3780-429c-4279-b30a-d2626b1c2f8e"
+        },
+        "namespace": "local",
+        "type": "PERSON"
+      },
+      "target": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "3bf98798-cae9-4950-8a8c-6d7f8d485abc"
+        },
+        "namespace": "local",
+        "type": "GROUP"
+      }
+    },
+    {
+      "_type": "PARTY_RELATIONSHIP",
+      "archetype_details": {
+        "_type": "ARCHETYPED",
+        "archetype_id": {
+          "_type": "ARCHETYPE_ID",
+          "value": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1"
+        },
+        "rm_version": "1.2.0"
+      },
+      "archetype_node_id": "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1",
+      "details": {
+        "_type": "ITEM_TREE",
+        "archetype_node_id": "at0001",
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0002",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Specialty"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Specialty"
+            }
+          },
+          {
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0003",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Comment"
+            }
+          }
+        ],
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Details"
+        }
+      },
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Role assignment"
+      },
+      "source": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "a9735a3c-fbe3-4cef-b1dd-b0a01a12c84a"
+        },
+        "namespace": "local",
+        "type": "PERSON"
+      },
+      "target": {
+        "_type": "PARTY_REF",
+        "id": {
+          "_type": "HIER_OBJECT_ID",
+          "value": "21ff2330-f4a0-4d99-af09-01a1947094b0"
+        },
+        "namespace": "local",
+        "type": "ROLE"
+      }
+    }
+  ]
+}
