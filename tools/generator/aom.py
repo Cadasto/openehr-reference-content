@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 
 OPENEHR_NS = "http://schemas.openehr.org/v1"
 XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
+XSD_NS = "http://www.w3.org/2001/XMLSchema"
 XSI_TYPE = "{%s}type" % XSI_NS
 STAR = None  # an unbounded upper limit
 
@@ -29,6 +30,7 @@ class Obj:
         self.attrs = list(attrs or [])
         self.kind = kind
         self.include = []        # slot: include patterns, without the slashes
+        self.open = False        # slot: a template keeps it (keep_open)
         self.archetype = None    # root: the archetype it embeds
         self.terminology = None  # code_phrase
         self.codes = []          # code_phrase
@@ -454,10 +456,20 @@ def date_pattern(root, element_path, pattern):
     dv[0].attrs = DATE(pattern).attrs
 
 
+def keep_open(root, *slot_paths):
+    """Keep slots open in the template: close_slots leaves them, and the OPT holds each as
+    an ARCHETYPE_SLOT that admits any archetype its include patterns match."""
+    for path in slot_paths:
+        node = find(root, path)
+        if node.kind != "slot":
+            raise KeyError("keep_open %s: not a slot" % path)
+        node.open = True
+
+
 def close_slots(node):
-    """Remove every slot the template left unfilled: the template is closed."""
+    """Remove every slot the template left unfilled and did not keep open."""
     for a in node.attrs:
-        a.children = [c for c in a.children if c.kind != "slot"]
+        a.children = [c for c in a.children if c.kind != "slot" or c.open]
         for c in a.children:
             if c.kind in ("complex", "root"):
                 close_slots(c)
@@ -525,14 +537,18 @@ def _x_obj(parent, o, tag="children"):
         old[:] = list(new)
         parent.append(e)
         return
-    xtype = {"complex": "C_COMPLEX_OBJECT", "root": "C_ARCHETYPE_ROOT",
+    xtype = {"complex": "C_COMPLEX_OBJECT", "root": "C_ARCHETYPE_ROOT", "slot": "ARCHETYPE_SLOT",
              "code_phrase": "C_CODE_PHRASE", "primitive": "C_PRIMITIVE_OBJECT"}.get(o.kind)
-    if xtype is None:
+    if o.kind == "slot" and not o.open:
         raise ValueError("an open slot %s[%s] is left in the template" % (o.rm, o.node_id))
     e = _sub(parent, tag) if tag == "definition" else _sub(parent, tag, **{"xsi:type": xtype})
     _sub(e, "rm_type_name", o.rm)
     _x_interval(e, "occurrences", *o.occ)
     _sub(e, "node_id", o.node_id)
+    if o.kind == "slot":
+        for inc in o.include:
+            _x_include(e, inc)
+        return
     if o.kind == "code_phrase":
         tid = _sub(e, "terminology_id")
         _sub(tid, "value", o.terminology)
@@ -567,6 +583,29 @@ def _x_obj(parent, o, tag="children"):
                 _sub(v, "code_string", arch.bindings[tid][code])
 
 
+def _x_include(slot, pattern):
+    """One include assertion of a slot, archetype_id/value matching pattern, as CKM writes it."""
+    inc = _sub(slot, "includes")
+    _sub(inc, "string_expression", "archetype_id/value matches {/%s/}" % pattern)
+    ex = _sub(inc, "expression", **{"xsi:type": "EXPR_BINARY_OPERATOR"})
+    _sub(ex, "type", "Boolean")
+    _sub(ex, "operator", "2007")  # OPERATOR_KIND op_matches
+    _sub(ex, "precedence_overridden", "false")
+    left = _sub(ex, "left_operand", **{"xsi:type": "EXPR_LEAF"})
+    _sub(left, "type", "String")
+    _sub(left, "item", "archetype_id/value", **{"xsi:type": "xsd:string"})
+    _sub(left, "reference_type", "attribute")
+    right = _sub(ex, "right_operand", **{"xsi:type": "EXPR_LEAF"})
+    _sub(right, "type", "C_STRING")
+    _sub(_sub(right, "item", **{"xsi:type": "C_STRING"}), "pattern", pattern)
+    _sub(right, "reference_type", "constraint")
+
+
+def _has_slot(node):
+    return any(c.kind == "slot" or (c.kind in ("complex", "root") and _has_slot(c))
+               for a in node.attrs for c in a.children)
+
+
 def _x_attr(parent, a):
     multiple = a.card is not None
     e = _sub(parent, "attributes", **{"xsi:type": "C_MULTIPLE_ATTRIBUTE" if multiple else "C_SINGLE_ATTRIBUTE"})
@@ -583,7 +622,11 @@ def _x_attr(parent, a):
 
 
 def write_opt(template_id, uid, concept, definition, meta, desc):
-    t = ET.Element("template", {"xmlns:xsi": XSI_NS, "xmlns": OPENEHR_NS})
+    ns = {"xmlns:xsi": XSI_NS}
+    if _has_slot(definition):
+        ns["xmlns:xsd"] = XSD_NS  # a slot's include assertion types an operand xsd:string
+    ns["xmlns"] = OPENEHR_NS
+    t = ET.Element("template", ns)
     lang = _sub(t, "language")
     _sub(_sub(lang, "terminology_id"), "value", "ISO_639-1")
     _sub(lang, "code_string", "en")
