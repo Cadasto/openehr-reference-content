@@ -1,7 +1,7 @@
 github.com/antlr4-go/antlr/v4 v4.13.1 h1:SqQKkuVZ+zWkMMNkjy5FZe5mr5WURWnlpmOuzYWrPrQ=
 github.com/antlr4-go/antlr/v4 v4.13.1/go.mod h1:GKmUxMtwp6ZgGwZSva4eWPC5mS6vUAmOABFgjdkM7Nw=
-github.com/cadasto/openehr-sdk-go v0.51.1-0.20261119203905-cbc9473284c3 h1:BvN8npauhqA0mKIKfNNE40MwfwZeCKFGiYanp2suV2I=
-github.com/cadasto/openehr-sdk-go v0.51.1-0.20261119203905-cbc9473284c3/go.mod h1:UgWf6nzs9onzgjdlxPmPs7UzGHe3MZb0XpuZsJU58og=
+github.com/cadasto/openehr-sdk-go v0.52.0 h1:UNJ0udvcGSnyv4q62qA8YZoTijJzVsyqshMDIWgerps=
+github.com/cadasto/openehr-sdk-go v0.52.0/go.mod h1:UgWf6nzs9onzgjdlxPmPs7UzGHe3MZb0XpuZsJU58og=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/go-logr/logr v1.4.4 h1:tG4xh9yMsRCAiodLVTxyrkzSZ9+o0L1Kg/+cPVcbP/8=
