@@ -13,7 +13,6 @@ import (
 
 	reference "github.com/cadasto/openehr-reference-content"
 	"github.com/cadasto/openehr-sdk-go/openehr/instance"
-	"github.com/cadasto/openehr-sdk-go/openehr/rm"
 	"github.com/cadasto/openehr-sdk-go/openehr/serialize/canjson"
 	"github.com/cadasto/openehr-sdk-go/openehr/templatecompile"
 	"github.com/cadasto/openehr-sdk-go/openehr/validation"
@@ -97,14 +96,8 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		assignRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1"
 		partOfRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.part_of.v1"
 	)
-	roots := map[string]func() any{
-		patient: func() any { return &rm.Person{} }, identity: func() any { return &rm.Person{} },
-		provider: func() any { return &rm.Person{} }, role: func() any { return &rm.Role{} },
-		agent: func() any { return &rm.Agent{} }, careTeam: func() any { return &rm.Group{} },
-		org: func() any { return &rm.Organisation{} }, group: func() any { return &rm.Group{} },
-	}
 	compiled := map[string]*templatecompile.Compiled{}
-	for id := range roots {
+	for _, id := range []string{patient, identity, provider, role, agent, careTeam, org, group} {
 		compiled[id] = mustTemplate(t, id)
 	}
 	// A fresh copy of each template's generated party, for one case to change.
@@ -243,13 +236,13 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		},
 	}
 
-	for id, root := range roots {
+	for id, c := range compiled {
 		t.Run("generated "+id+" is accepted", func(t *testing.T) {
 			b, err := json.Marshal(party(id))
 			if err != nil {
 				t.Fatal(err)
 			}
-			if res := validation.ValidateJSON(b, root(), compiled[id]); !res.OK {
+			if res := validation.ValidateJSON(b, newRoot(t, roots[id].rmType), c); !res.OK {
 				t.Errorf("ValidateJSON(generated %s) refused it: %v", id, res.Issues)
 			}
 		})
@@ -262,7 +255,7 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			res := validation.ValidateJSON(b, roots[tc.template](), compiled[tc.template])
+			res := validation.ValidateJSON(b, newRoot(t, roots[tc.template].rmType), compiled[tc.template])
 			for _, is := range res.Issues {
 				if strings.Contains(is.Path, tc.wantPath) && is.Code == tc.wantCode {
 					return

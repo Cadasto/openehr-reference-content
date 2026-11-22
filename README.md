@@ -27,8 +27,8 @@ Compile a document with the openEHR SDK of your choice, for example [openehr-sdk
 
 | Template id | Root | What it holds |
 |---|---|---|
-| `generic_ehr_status.v1` | EHR_STATUS | The archetype id a CDR gives an EHR_STATUS by default, `openEHR-EHR-EHR_STATUS.generic.v1`, with any other details |
-| `generic_folder.v1` | FOLDER | The default `openEHR-EHR-FOLDER.generic.v1`, with any details, sub-folders and items |
+| `generic_ehr_status.v1` | EHR_STATUS | The archetype id a CDR gives an EHR_STATUS by default, `openEHR-EHR-EHR_STATUS.generic.v1`, with an ITEM_TREE as other details, plain or defined by an archetype |
+| `generic_folder.v1` | FOLDER | The default `openEHR-EHR-FOLDER.generic.v1`, with an ITEM_TREE as details, plain or defined by an archetype, and any sub-folders and items |
 | `PERSON-Patient.v1` | PERSON | A patient that names no one: identifiers such as a patient number or a pseudonym, the year of birth, administrative gender, whether the patient died; care relationships and role assignments |
 | `PERSON-PatientIdentity.v1` | PERSON | Who a patient is: names, identifiers, date of birth, gender, death, marital status, addresses, telecom, languages, contact persons |
 | `PERSON-CareProvider.v1` | PERSON | A care provider: names, identifiers, qualifications, contacts, languages; memberships and role assignments |

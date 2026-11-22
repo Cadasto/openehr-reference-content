@@ -31,8 +31,8 @@ var shipped = []struct {
 	{reference.PatientTemplateID, "42ab2e4debe97ff4a05a34deebcd846bbee1f950dd832d8d197c2ef8223904e7"},
 	{reference.PatientIdentityTemplateID, "160a3f76da5885996c7d6d03399f7acfddd0d2c21a401ed18e27da36443bb945"},
 	{reference.RoleTemplateID, "6f3008d019d2d3963aefd73a8135ee85e9ed2ad8b78f03ee6246869eb77aa41a"},
-	{reference.EHRStatusTemplateID, "07a4b3e9c3312c141df7bc6b05caf011d5426307255bc7f0042d1e2560ea2726"},
-	{reference.FolderTemplateID, "be2ee7763acc23f6a62347880d2b3f763ea716a2446e6778e0235d9fbef8c509"},
+	{reference.EHRStatusTemplateID, "4bbcaa6944a382424bf87df07b67f7ad509328e098decc42ca79b252d52e0ccb"},
+	{reference.FolderTemplateID, "ff87664de7c39ec07a62e5536aa32d28c35a85f748630d9af303fbfdc21d5839"},
 }
 
 // TestTemplateIDsListEveryFolder holds TemplateIDs to the constants and to

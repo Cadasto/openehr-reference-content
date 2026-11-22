@@ -2,8 +2,8 @@
 
 package conformance_test
 
-// The generic EHR_STATUS and FOLDER templates accept any ITEM_STRUCTURE as
-// the one attribute they constrain, plain or archetyped.
+// The generic EHR_STATUS and FOLDER templates accept an ITEM_TREE as the one
+// attribute they constrain, plain or archetyped, and no other item structure.
 
 import (
 	"encoding/json"
@@ -13,31 +13,15 @@ import (
 
 	reference "github.com/cadasto/openehr-reference-content"
 	"github.com/cadasto/openehr-sdk-go/openehr/instance"
-	"github.com/cadasto/openehr-sdk-go/openehr/rm"
 	"github.com/cadasto/openehr-sdk-go/openehr/validation"
 )
 
 // genericTemplates are the two templates, each with the attribute it
-// constrains and a value of its root class to validate into.
-var genericTemplates = []struct {
-	id   string
-	attr string
-	root func() any
-}{
-	{reference.EHRStatusTemplateID, "other_details", func() any { return &rm.EHRStatus{} }},
-	{reference.FolderTemplateID, "details", func() any { return &rm.Folder{} }},
+// constrains.
+var genericTemplates = []struct{ id, attr string }{
+	{reference.EHRStatusTemplateID, "other_details"},
+	{reference.FolderTemplateID, "details"},
 }
-
-// itemStructureClasses are the four ITEM_STRUCTURE classes, each with the
-// at-code of its plain node in both templates.
-var itemStructureClasses = []struct{ rmType, atCode string }{
-	{"ITEM_TREE", "at0001"},
-	{"ITEM_LIST", "at0003"},
-	{"ITEM_SINGLE", "at0005"},
-	{"ITEM_TABLE", "at0007"},
-}
-
-func exampleArchetypeID(rmType string) string { return "openEHR-EHR-" + rmType + ".example.v1" }
 
 func dvText(v string) map[string]any { return map[string]any{"_type": "DV_TEXT", "value": v} }
 
@@ -71,30 +55,36 @@ func itemStructure(rmType, nodeID string) map[string]any {
 	return s
 }
 
-// refusedIdentity are the issue codes that refuse a value for its node
-// identity: its archetype id matches neither the at-code of its class's
-// plain node (node_id_mismatch) nor the include pattern of its class's slot
-// (slot_fill). The SDK reports the one or the other.
-var refusedIdentity = []string{"node_id_mismatch", "slot_fill"}
+// The issue codes that refuse a value at the attribute. byIdentity: the
+// value's archetype id matches neither the at-code of the plain node nor the
+// slot's include pattern; the SDK reports the one or the other. byType: the
+// value is of a class no node of the attribute allows; the SDK reports
+// alternative_mismatch where the attribute has several nodes and
+// rm_type_mismatch where it has one, as in v0.1.0.
+var (
+	byIdentity = []string{"node_id_mismatch", "slot_fill"}
+	byType     = []string{"alternative_mismatch", "rm_type_mismatch"}
+)
 
-func TestGenericTemplatesAcceptAnyItemStructure(t *testing.T) {
+func TestGenericTemplatesAcceptOnlyAnItemTree(t *testing.T) {
 	t.Parallel()
-	type itemCase struct {
-		name    string
-		rmType  string
-		nodeID  string
-		refused bool
-	}
-	// Each class plain and archetyped, and under the archetype id of the
-	// next class, which its slot must refuse.
-	var tests []itemCase
-	for i, cls := range itemStructureClasses {
-		other := itemStructureClasses[(i+1)%len(itemStructureClasses)].rmType
-		tests = append(tests,
-			itemCase{name: cls.rmType + " plain", rmType: cls.rmType, nodeID: cls.atCode},
-			itemCase{name: cls.rmType + " archetyped", rmType: cls.rmType, nodeID: exampleArchetypeID(cls.rmType)},
-			itemCase{name: cls.rmType + " under an " + other + " archetype", rmType: cls.rmType, nodeID: exampleArchetypeID(other), refused: true},
-		)
+	tests := []struct {
+		name      string
+		rmType    string
+		nodeID    string
+		refusedBy []string // nil: the template accepts it
+	}{
+		{name: "plain ITEM_TREE", rmType: "ITEM_TREE", nodeID: "at0001"},
+		{name: "archetyped ITEM_TREE", rmType: "ITEM_TREE", nodeID: "openEHR-EHR-ITEM_TREE.example.v1"},
+		// The slot admits an ITEM_TREE archetype of the EHR namespace only.
+		{name: "ITEM_TREE under an ITEM_LIST archetype", rmType: "ITEM_TREE", nodeID: "openEHR-EHR-ITEM_LIST.example.v1", refusedBy: byIdentity},
+		{name: "ITEM_TREE under a demographic archetype", rmType: "ITEM_TREE", nodeID: "openEHR-DEMOGRAPHIC-ITEM_TREE.example.v1", refusedBy: byIdentity},
+		{name: "plain ITEM_LIST", rmType: "ITEM_LIST", nodeID: "at0001", refusedBy: byType},
+		{name: "archetyped ITEM_LIST", rmType: "ITEM_LIST", nodeID: "openEHR-EHR-ITEM_LIST.example.v1", refusedBy: byType},
+		{name: "plain ITEM_SINGLE", rmType: "ITEM_SINGLE", nodeID: "at0001", refusedBy: byType},
+		{name: "archetyped ITEM_SINGLE", rmType: "ITEM_SINGLE", nodeID: "openEHR-EHR-ITEM_SINGLE.example.v1", refusedBy: byType},
+		{name: "plain ITEM_TABLE", rmType: "ITEM_TABLE", nodeID: "at0001", refusedBy: byType},
+		{name: "archetyped ITEM_TABLE", rmType: "ITEM_TABLE", nodeID: "openEHR-EHR-ITEM_TABLE.example.v1", refusedBy: byType},
 	}
 	for _, tmpl := range genericTemplates {
 		c := mustTemplate(t, tmpl.id)
@@ -107,8 +97,8 @@ func TestGenericTemplatesAcceptAnyItemStructure(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				res := validation.ValidateJSON(b, tmpl.root(), c)
-				if !tc.refused {
+				res := validation.ValidateJSON(b, newRoot(t, roots[tmpl.id].rmType), c)
+				if tc.refusedBy == nil {
 					if !res.OK {
 						t.Errorf("ValidateJSON(%s with %s %s as %s) refused it: %v", tmpl.id, tc.rmType, tc.nodeID, tmpl.attr, res.Issues)
 					}
@@ -116,13 +106,13 @@ func TestGenericTemplatesAcceptAnyItemStructure(t *testing.T) {
 				}
 				if !res.OK {
 					for _, is := range res.Issues {
-						if strings.HasPrefix(is.Path, "/"+tmpl.attr) && slices.Contains(refusedIdentity, is.Code) {
+						if strings.HasPrefix(is.Path, "/"+tmpl.attr) && slices.Contains(tc.refusedBy, is.Code) {
 							return
 						}
 					}
 				}
 				t.Errorf("ValidateJSON(%s with %s %s as %s): want a %v issue at /%s, got OK=%v issues %v",
-					tmpl.id, tc.rmType, tc.nodeID, tmpl.attr, refusedIdentity, tmpl.attr, res.OK, res.Issues)
+					tmpl.id, tc.rmType, tc.nodeID, tmpl.attr, tc.refusedBy, tmpl.attr, res.OK, res.Issues)
 			})
 		}
 	}
