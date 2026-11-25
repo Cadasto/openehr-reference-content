@@ -6,6 +6,17 @@ A template id never starts refusing an instance it accepted before: a change tha
 
 ## [Unreleased]
 
+### Changed
+
+- **Templates:** `PERSON-Patient.v1` is now the one party that stands for a patient: it takes in everything `PERSON-PatientIdentity.v1` held (names with their structured parts, a full date of birth, date and time of death, marital status, multiple birth, place of birth, addresses, telecom, contact persons, and languages, now any number of them), keeps its mandatory identifier, care relationships and role assignments, and makes its pseudonym optional; it still accepts every instance it accepted, so a consumer that stored a copy should replace it.
+- **Templates:** every element of `PERSON-Patient.v1` leaves its value optional and puts no constraint on its null flavour, so a service can store the patient with its identifying values masked (null flavour `272|masked|`), which the `conformance` module now checks.
+- **Archetypes:** `PERSON.generic_person` lets `languages` hold any number of DV_TEXTs, where it held exactly one, and its use names a patient and a care provider as the templates built on it; `PERSON-CareProvider.v1` keeps exactly one language, so its document is unchanged.
+- **Tooling:** the generator writes the occurrences of a node without a node id when they are not `1..1`.
+
+### Removed
+
+- **Templates:** `PERSON-PatientIdentity.v1`, its example and the Go constant `PatientIdentityTemplateID`, since a patient's identity is held in `PERSON-Patient.v1`; a server that stored the template keeps it, and a Go program that names the constant no longer compiles.
+
 ## [0.2.0] - 2026-11-22
 
 ### Added

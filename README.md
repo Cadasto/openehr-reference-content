@@ -30,8 +30,7 @@ Compile a document with the openEHR SDK of your choice, for example [openehr-sdk
 |---|---|---|
 | `generic_ehr_status.v1` | EHR_STATUS | The archetype id a CDR gives an EHR_STATUS by default, `openEHR-EHR-EHR_STATUS.generic.v1`, with an ITEM_TREE as other details, plain or defined by an archetype |
 | `generic_folder.v1` | FOLDER | The default `openEHR-EHR-FOLDER.generic.v1`, with an ITEM_TREE as details, plain or defined by an archetype, and any sub-folders and items |
-| `PERSON-Patient.v1` | PERSON | A patient that names no one: identifiers such as a patient number or a pseudonym, the year of birth, administrative gender, whether the patient died; care relationships and role assignments |
-| `PERSON-PatientIdentity.v1` | PERSON | Who a patient is: names, identifiers, date of birth, gender, death, marital status, addresses, telecom, languages, contact persons |
+| `PERSON-Patient.v1` | PERSON | A patient, as one party: identifiers (at least one, such as the patient number), names, a pseudonym, date of birth, gender, death, marital status, addresses, telecom, languages, contact persons; care relationships and role assignments. Every element can be stored masked |
 | `PERSON-CareProvider.v1` | PERSON | A care provider: names, identifiers, qualifications, contacts, languages; memberships and role assignments |
 | `ROLE-generic-role.v1` | ROLE | A function actors perform, with its capabilities |
 | `AGENT-generic-agent.v1` | AGENT | A software application, a device or a service, with the parties it acts for |
@@ -40,7 +39,7 @@ Compile a document with the openEHR SDK of your choice, for example [openehr-sdk
 | `GROUP-generic.v1` | GROUP | Any other group, such as a household or a cohort, with the traits its members share |
 
 The demographic templates are built on thirteen local archetypes, under [`models/local/archetypes/`](models/local/archetypes/), and five published CKM clusters, under [`models/remote/org.openehr/`](models/remote/org.openehr/).
-[`docs/design/demographic-model.md`](docs/design/demographic-model.md) explains their shape: why the patient and the patient's identity are two parties, why each relationship type is an archetype held by its source party, and what each template keeps out.
+[`docs/design/demographic-model.md`](docs/design/demographic-model.md) explains their shape: why a patient is one party whose identifying values a service can mask, why each relationship type is an archetype held by its source party, and what each template keeps out.
 [`docs/reference/sources.md`](docs/reference/sources.md) lists what they were built from and checked against.
 
 ## Stability

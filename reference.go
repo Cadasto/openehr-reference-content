@@ -16,12 +16,9 @@ const (
 	EHRStatusTemplateID = "generic_ehr_status.v1"
 	// FolderTemplateID is the template id of the generic FOLDER template.
 	FolderTemplateID = "generic_folder.v1"
-	// PatientTemplateID is the template id of the patient template: a PERSON
-	// that names no one.
+	// PatientTemplateID is the template id of the patient template: the one
+	// PERSON that stands for a patient.
 	PatientTemplateID = "PERSON-Patient.v1"
-	// PatientIdentityTemplateID is the template id of the template of a
-	// patient's identity: the PERSON that says who the patient is.
-	PatientIdentityTemplateID = "PERSON-PatientIdentity.v1"
 	// CareProviderTemplateID is the template id of the care provider
 	// template, a PERSON.
 	CareProviderTemplateID = "PERSON-CareProvider.v1"

@@ -16,7 +16,7 @@ What the archetypes and templates were built from and checked against.
 
 | Resource | Used for |
 |---|---|
-| [Patient](https://hl7.org/fhir/R4/patient.html) | PERSON-Patient.v1, PERSON-PatientIdentity.v1 |
+| [Patient](https://hl7.org/fhir/R4/patient.html) | PERSON-Patient.v1 |
 | [Practitioner](https://hl7.org/fhir/R4/practitioner.html), [PractitionerRole](https://hl7.org/fhir/R4/practitionerrole.html) | PERSON-CareProvider.v1, ROLE-generic-role.v1, role_assignment |
 | [RelatedPerson](https://hl7.org/fhir/R4/relatedperson.html) | Contact persons |
 | [Device](https://hl7.org/fhir/R4/device.html) | AGENT-generic-agent.v1 |

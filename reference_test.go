@@ -28,8 +28,7 @@ var shipped = []struct {
 	{reference.GroupTemplateID, "e19c6c5419a8cc692991f6bf8b930b09bafa08cbbbb8033c7327e5ae22e96a6b"},
 	{reference.OrganisationTemplateID, "09a41c892a923569895b77e6448148d62b6a56f08305924e30b09cfef5139a30"},
 	{reference.CareProviderTemplateID, "9f268c346f4013680de431d90357d8818bbea5dfea4da0801021c99639c4f4a7"},
-	{reference.PatientTemplateID, "42ab2e4debe97ff4a05a34deebcd846bbee1f950dd832d8d197c2ef8223904e7"},
-	{reference.PatientIdentityTemplateID, "160a3f76da5885996c7d6d03399f7acfddd0d2c21a401ed18e27da36443bb945"},
+	{reference.PatientTemplateID, "47ad94e1039478fcd9fdde2ce42bf9cca99bb2debe795e4f701c99956a81a6f4"},
 	{reference.RoleTemplateID, "6f3008d019d2d3963aefd73a8135ee85e9ed2ad8b78f03ee6246869eb77aa41a"},
 	{reference.EHRStatusTemplateID, "4bbcaa6944a382424bf87df07b67f7ad509328e098decc42ca79b252d52e0ccb"},
 	{reference.FolderTemplateID, "ff87664de7c39ec07a62e5536aa32d28c35a85f748630d9af303fbfdc21d5839"},
@@ -161,7 +160,6 @@ func ExampleTemplateIDs() {
 	// ORGANISATION-generic.v1
 	// PERSON-CareProvider.v1
 	// PERSON-Patient.v1
-	// PERSON-PatientIdentity.v1
 	// ROLE-generic-role.v1
 	// generic_ehr_status.v1
 	// generic_folder.v1

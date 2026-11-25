@@ -15,7 +15,7 @@ description
 		["en"] = <
 			language = <[ISO_639-1::en]>
 			purpose = <"To record a person as a party in a demographic service: the person's identifiers, names, birth and death, administrative gender and contacts, and the relationships the person holds to other parties.">
-			use = <"Use for any person a demographic service holds: a patient, a care provider, a contact person. The archetype carries no role: a template selects what a use needs, such as a patient record that names no one, a patient's identity, or a care provider. Names are PARTY_IDENTITYs; identifiers issued for the person go in details. A person's relationships to care providers, care teams, organisations and roles are PARTY_RELATIONSHIP archetypes in the relationships slot.">
+			use = <"Use for any person a demographic service holds: a patient, a care provider, a contact person. The archetype carries no role: a template selects what a use needs, such as a patient or a care provider. Names are PARTY_IDENTITYs; identifiers issued for the person go in details. A person's relationships to care providers, care teams, organisations and roles are PARTY_RELATIONSHIP archetypes in the relationships slot.">
 			keywords = <"person", "patient", "care provider", "name", "identifier", "date of birth", "gender", "contact", "demographics">
 			misuse = <"Not for clinical observations about the person, such as sex, gender identity, ethnicity or occupation: record those in the health record. Not for an organisation, a group or a device: use ORGANISATION, GROUP or AGENT archetypes.">
 			copyright = <"© openehr-reference-content contributors">
@@ -235,7 +235,7 @@ definition
 			}
 		}
 		languages existence matches {0..1} cardinality matches {0..*; ordered} matches {
-			DV_TEXT matches {*}
+			DV_TEXT occurrences matches {0..*} matches {*}
 		}
 	}
 

@@ -8,14 +8,12 @@
 //   - generic_ehr_status.v1 ([EHRStatusTemplateID]) and generic_folder.v1
 //     ([FolderTemplateID]): the archetype id a CDR gives an EHR_STATUS or a
 //     FOLDER by default, with their details left open.
-//   - PERSON-Patient.v1 ([PatientTemplateID]): a patient that names no one:
-//     identifiers such as a patient number or a pseudonym, the year of birth,
-//     the administrative gender, whether the patient has died, a pseudonym as
-//     its only identity, care relationships and role assignments. It can be
-//     the subject of an EHR while the patient's identity is kept apart.
-//   - PERSON-PatientIdentity.v1 ([PatientIdentityTemplateID]): who a patient
-//     is: names, identifiers, birth, gender, death, marital status, addresses,
-//     telecom, languages and contact persons; no relationships.
+//   - PERSON-Patient.v1 ([PatientTemplateID]): the one party that stands for
+//     a patient: identifiers, at least one, names and an optional pseudonym,
+//     birth, gender, death, marital status, addresses, telecom, languages,
+//     contact persons, care relationships and role assignments. Every element
+//     leaves its value optional and accepts the null flavour masked, so a
+//     service can store the party with its identifying values masked.
 //   - PERSON-CareProvider.v1 ([CareProviderTemplateID]): a care provider,
 //     with memberships of care teams and organisations and role assignments.
 //   - ROLE-generic-role.v1 ([RoleTemplateID]): a function actors perform,

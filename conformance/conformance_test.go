@@ -3,8 +3,9 @@
 // Package conformance_test checks every template the module ships with the
 // openEHR SDK for Go: each reads and compiles strictly, every instance the
 // SDK generates from it validates against it, each refuses what it promises
-// to keep out (refusals_test.go, item_tree_test.go), and its stored example
-// instance is current and validates (examples_test.go).
+// to keep out (refusals_test.go, item_tree_test.go), the patient template
+// accepts a party whose elements are masked (masked_test.go), and each
+// stored example instance is current and validates (examples_test.go).
 package conformance_test
 
 import (
@@ -27,16 +28,15 @@ import (
 
 // roots is each template's root: its RM type and archetype id.
 var roots = map[string]struct{ rmType, archetypeID string }{
-	reference.EHRStatusTemplateID:       {"EHR_STATUS", "openEHR-EHR-EHR_STATUS.generic.v1"},
-	reference.FolderTemplateID:          {"FOLDER", "openEHR-EHR-FOLDER.generic.v1"},
-	reference.PatientTemplateID:         {"PERSON", "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"},
-	reference.PatientIdentityTemplateID: {"PERSON", "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"},
-	reference.CareProviderTemplateID:    {"PERSON", "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"},
-	reference.RoleTemplateID:            {"ROLE", "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"},
-	reference.AgentTemplateID:           {"AGENT", "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1"},
-	reference.CareTeamTemplateID:        {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.care_team.v1"},
-	reference.OrganisationTemplateID:    {"ORGANISATION", "openEHR-DEMOGRAPHIC-ORGANISATION.generic_organisation.v1"},
-	reference.GroupTemplateID:           {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.generic_group.v1"},
+	reference.EHRStatusTemplateID:    {"EHR_STATUS", "openEHR-EHR-EHR_STATUS.generic.v1"},
+	reference.FolderTemplateID:       {"FOLDER", "openEHR-EHR-FOLDER.generic.v1"},
+	reference.PatientTemplateID:      {"PERSON", "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"},
+	reference.CareProviderTemplateID: {"PERSON", "openEHR-DEMOGRAPHIC-PERSON.generic_person.v1"},
+	reference.RoleTemplateID:         {"ROLE", "openEHR-DEMOGRAPHIC-ROLE.generic_role.v1"},
+	reference.AgentTemplateID:        {"AGENT", "openEHR-DEMOGRAPHIC-AGENT.generic_agent.v1"},
+	reference.CareTeamTemplateID:     {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.care_team.v1"},
+	reference.OrganisationTemplateID: {"ORGANISATION", "openEHR-DEMOGRAPHIC-ORGANISATION.generic_organisation.v1"},
+	reference.GroupTemplateID:        {"GROUP", "openEHR-DEMOGRAPHIC-GROUP.generic_group.v1"},
 }
 
 // newRoot is an empty value of the RM class rmType, for

@@ -112,8 +112,8 @@ def ITEMS(*children, card=(1, STAR, False, False)):
     return Attr("items", list(children), (1, 1), card)
 
 
-def DV(rm):
-    return Obj(rm, "", (1, 1))
+def DV(rm, occ=(1, 1)):
+    return Obj(rm, "", occ)
 
 
 def CODED(*codes, terminology="local"):
@@ -257,7 +257,7 @@ def _adl_obj(o, ind, terms, out, root=False):
             out.append("%s%s%s\t-- %s" % (t, c, sep, label))
         return
     head = o.rm + ("[%s]" % o.node_id if o.node_id else "")
-    if o.node_id and not root:
+    if (o.node_id or o.occ != (1, 1)) and not root:
         head += " occurrences matches {%s}" % _occ(o.occ)
     if not o.attrs:
         out.append("%s%s matches {*}%s" % (t, head, comment))

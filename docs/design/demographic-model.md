@@ -6,21 +6,21 @@ The normative definitions are the openEHR Reference Model's demographic package,
 ## One archetype per class, one template per use
 
 `PERSON.generic_person` carries no role: identifiers, names, a pseudonym, birth and death, administrative gender, qualifications, contacts, contact persons, languages and relationships.
-The three PERSON templates select from it what one use needs:
+The two PERSON templates select from it what one use needs:
 
 | Template | Use | Holds | Keeps out |
 |---|---|---|---|
-| `PERSON-Patient.v1` | The subject of an EHR | Identifiers (at least one: a patient number or a pseudonym), the year of birth (`yyyy-XX-XX`), administrative gender, whether the patient died, a pseudonym as the only identity; care relationships and role assignments | Names, contacts, languages, a full date of birth, every other detail |
-| `PERSON-PatientIdentity.v1` | Who the patient is | Names, identifiers, date of birth, gender, death, marital status, multiple birth, place of birth, addresses, telecom, languages, contact persons | Relationships, pseudonyms |
+| `PERSON-Patient.v1` | A patient, the subject of an EHR | Identifiers (at least one, such as the patient number), names, a pseudonym, date of birth, gender, death, marital status, multiple birth, place of birth, addresses, telecom, languages, contact persons; care relationships and role assignments | Qualifications, additional details, memberships, acting on behalf, a second pseudonym |
 | `PERSON-CareProvider.v1` | A member of staff who provides care | Names, identifiers, date of birth, gender, qualifications, contacts, languages; memberships and role assignments | Death and birth details, contact persons, pseudonyms, care relationships |
 
 ROLE, AGENT, ORGANISATION and the two GROUPs each have an archetype and a template of their own.
 
-## The patient and the patient's identity are two parties
+## A patient is one party, whose identifying values can be masked
 
-`PERSON-Patient.v1` names no one, so it can be the subject an EHR_STATUS references while who the patient is stays in `PERSON-PatientIdentity.v1`, kept apart from the record.
-Linking the two is left to the service, outside both: a link in either would let the record reach the identity.
-This is the coded level of identification the Reference Model's EHR package describes.
+`PERSON-Patient.v1` is the one party that stands for a patient: the subject an EHR_STATUS references, and who the patient is.
+A service that keeps identifying values apart from the record may store the party with them masked: each masked ELEMENT keeps its node, loses its value and carries the null flavour masked (openehr code 272).
+So every ELEMENT of the template leaves its value optional and puts no constraint on its null flavour.
+A masked name is still a PARTY_IDENTITY, so the party keeps the identity the Reference Model requires; the identifier stays mandatory, and the pseudonym is optional.
 
 ## Names, identifiers and contacts
 

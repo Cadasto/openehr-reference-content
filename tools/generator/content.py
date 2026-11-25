@@ -2,7 +2,7 @@
 """The reference archetypes and the operational templates built from them."""
 from aom import (A, ITEMS, C, CODED, DV, E, SLOT, CKM_SLOT, PARTY_REF, STAR, Archetype,
                  begin_terms, end_terms, instantiate, drop, occurrences, existence,
-                 fill, date_pattern, keep_open)
+                 fill, keep_open)
 
 REL = r"openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP\.%s(-[a-zA-Z0-9_]+)*\.v1"
 ANY_CLUSTER = r".*"
@@ -231,13 +231,13 @@ def _person():
                                  [REL % "care_relationship", REL % "party_membership",
                                   REL % "role_assignment", REL % "acting_on_behalf"], occ=(0, STAR))],
           existence=(0, 1)),
-        A("languages", [DV("DV_TEXT")], existence=(0, 1), card=(0, STAR, True, False)),
+        A("languages", [DV("DV_TEXT", occ=(0, STAR))], existence=(0, 1), card=(0, STAR, True, False)),
     ])
 
 
 PERSON = archetype("openEHR-DEMOGRAPHIC-PERSON.generic_person.v1", "bed1d1ae-9a34-44ef-818d-cdea610c0d64", _person, {
     "purpose": "To record a person as a party in a demographic service: the person's identifiers, names, birth and death, administrative gender and contacts, and the relationships the person holds to other parties.",
-    "use": "Use for any person a demographic service holds: a patient, a care provider, a contact person. The archetype carries no role: a template selects what a use needs, such as a patient record that names no one, a patient's identity, or a care provider. Names are PARTY_IDENTITYs; identifiers issued for the person go in details. A person's relationships to care providers, care teams, organisations and roles are PARTY_RELATIONSHIP archetypes in the relationships slot.",
+    "use": "Use for any person a demographic service holds: a patient, a care provider, a contact person. The archetype carries no role: a template selects what a use needs, such as a patient or a care provider. Names are PARTY_IDENTITYs; identifiers issued for the person go in details. A person's relationships to care providers, care teams, organisations and roles are PARTY_RELATIONSHIP archetypes in the relationships slot.",
     "misuse": "Not for clinical observations about the person, such as sex, gender identity, ethnicity or occupation: record those in the health record. Not for an organisation, a group or a device: use ORGANISATION, GROUP or AGENT archetypes.",
     "keywords": ["person", "patient", "care provider", "name", "identifier", "date of birth", "gender", "contact", "demographics"],
     "references": "Structure derived from %s. Names, addresses, telecom and contact persons use the published CKM clusters openEHR-EHR-CLUSTER.structured_name.v1, address.v1, electronic_communication.v1 and person.v1. Aligned with %s." % (CKM_V0, fhir("resources Patient, Practitioner and RelatedPerson")),
@@ -701,28 +701,13 @@ def patient():
     d = "/details[at0001]/items"
     existence(t, "/", "details", 1, 1)
     occurrences(t, d + "[at0002]", 1, STAR)
-    date_pattern(t, d + "[at0003]", "yyyy-XX-XX")
-    drop(t, d + "[at0010]", d + "[at0011]", d + "[at0022]", d + "[at0023]", d + "[at0024]",
-         d + "[at0029]", d + "[at0030]")
-    drop(t, "/identities[at0031]")
-    occurrences(t, "/identities[at0043]", 1, 1)
-    existence(t, "/", "contacts", 0, 0)
-    existence(t, "/", "languages", 0, 0)
-    fill(t, "/relationships[at0058]", CARE_RELATIONSHIP, ROLE_ASSIGNMENT)
-    return t
-
-
-def patient_identity():
-    t = instantiate(PERSON)
-    d = "/details[at0001]/items"
     drop(t, d + "[at0024]", d + "[at0030]")
     fill(t, d + "[at0023]", CKM["address"])
     _fill_contact_person(t, d + "[at0029]")
-    drop(t, "/identities[at0043]")
-    occurrences(t, "/identities[at0031]", 1, STAR)
     _fill_name(t, "/identities[at0031]")
+    occurrences(t, "/identities[at0043]", 0, 1)
     _fill_contacts(t)
-    existence(t, "/", "relationships", 0, 0)
+    fill(t, "/relationships[at0058]", CARE_RELATIONSHIP, ROLE_ASSIGNMENT)
     return t
 
 
@@ -735,6 +720,7 @@ def care_provider():
     occurrences(t, "/identities[at0031]", 1, STAR)
     _fill_name(t, "/identities[at0031]")
     _fill_contacts(t)
+    occurrences(t, "/languages", 1, 1)
     fill(t, "/relationships[at0058]", PARTY_MEMBERSHIP, ROLE_ASSIGNMENT)
     return t
 
@@ -798,16 +784,10 @@ TEMPLATES = [
         "keywords": ["folder", "directory", "default"],
     }),
     ("PERSON-Patient.v1", "1c86b6b3-ea97-4c33-9846-c38f16085e54", "Patient", patient, {
-        "purpose": "A patient as a party beside the EHR, the party an EHR_STATUS subject references. It names no one: it holds the patient number or a pseudonym, the year of birth, the administrative gender and whether the patient has died, and the patient's relationships to care providers, care teams, organisations and roles.",
-        "use": "Use for the party that stands for a patient in the clinical domain, where who the patient is is kept apart in a PERSON-PatientIdentity.v1 party. The identifier is the patient number or the pseudonym (DV_IDENTIFIER type MR, PI or ANON); the only identity is a pseudonym. A care relationship to a care provider, a care team or an organisation puts the patient in their care; a role assignment gives the patient a shared role.",
-        "misuse": "Not for names, addresses, telecom, a full date of birth or a national person number: the template has no place for them, and they belong in PERSON-PatientIdentity.v1.",
-        "keywords": ["patient", "pseudonym", "EHR subject", "care relationship"],
-    }),
-    ("PERSON-PatientIdentity.v1", "1dad7890-0985-4bb1-837b-5f17819ef32c", "Patient identity", patient_identity, {
-        "purpose": "Who a patient is: the patient's names, identifiers such as a national person number or a passport number, date of birth, administrative gender, marital status, death, addresses, telecom, languages and contact persons.",
-        "use": "Use for the person that identifies a patient, kept apart from the health record and linked to the patient's PERSON-Patient.v1 party outside both. It holds no relationships. Contact persons such as next of kin are recorded inline, as FHIR Patient.contact does.",
-        "misuse": "Not as the subject of an EHR where the identity is to be kept apart from the record: use PERSON-Patient.v1. Not for clinical observations about the patient.",
-        "keywords": ["patient identity", "person", "name", "identifier", "address", "contact person"],
+        "purpose": "A patient as a party, the one an EHR_STATUS subject references: identifiers, at least one, such as the patient number; names and a pseudonym; date of birth, administrative gender, death, marital status, multiple birth and place of birth; addresses, telecom, languages and contact persons; and the patient's relationships to care providers, care teams, organisations and roles.",
+        "use": "Use for the one party that stands for a patient. The identifier is mandatory: the patient number (DV_IDENTIFIER type MR) and any others, such as a national person number. Names are PARTY_IDENTITYs; a pseudonym is one more, optional. Every element leaves its value optional and accepts any null flavour, so a service that keeps identifying values apart can store the party with each of them emptied and flagged masked (openehr code 272), and the party keeps its identities. Contact persons such as next of kin are recorded inline, as FHIR Patient.contact does. A care relationship to a care provider, a care team or an organisation puts the patient in their care; a role assignment gives the patient a shared role.",
+        "misuse": "Not for qualifications or memberships of care teams and organisations: a patient who is also a care provider has a PERSON-CareProvider.v1 party as well. Not for clinical observations about the patient.",
+        "keywords": ["patient", "person", "name", "pseudonym", "identifier", "address", "contact person", "EHR subject", "care relationship"],
     }),
     ("PERSON-CareProvider.v1", "b842cd17-68ca-4c45-b7ba-8357e9c9ff36", "Care provider", care_provider, {
         "purpose": "A care provider as a party: the person's names, identifiers such as professional registration numbers, administrative gender, qualifications, work contacts and languages, with memberships of care teams and organisations and the roles the person holds.",

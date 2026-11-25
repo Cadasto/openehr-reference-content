@@ -19,11 +19,11 @@ import (
 )
 
 // Each template makes a promise about the parties it accepts: a patient that
-// names no one, an identity that holds no relationship, relationships whose
-// targets are of the right class. Each case below breaks one promise in a
-// party the SDK generated from the template, which the template accepts
-// unchanged, and expects the validator to refuse it at the node that breaks
-// it.
+// holds an identifier and an identity, a care team that holds no
+// relationship, relationships whose targets are of the right class. Each case
+// below breaks one promise in a party the SDK generated from the template,
+// which the template accepts unchanged, and expects the validator to refuse
+// it at the node that breaks it.
 
 // generatedJSON is the instance the SDK generates from the template under
 // policy, as a canonical JSON object to mutate.
@@ -81,11 +81,22 @@ func relationshipOf(t *testing.T, party map[string]any, archetypeID string) map[
 	return nil
 }
 
+func identityOf(t *testing.T, party map[string]any, nodeID string) map[string]any {
+	t.Helper()
+	ids, _ := party["identities"].([]any)
+	for _, i := range ids {
+		if id := i.(map[string]any); id["archetype_node_id"] == nodeID {
+			return id
+		}
+	}
+	t.Fatalf("generated %v has no identity %s", party["_type"], nodeID)
+	return nil
+}
+
 func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 	t.Parallel()
 	const (
 		patient   = reference.PatientTemplateID
-		identity  = reference.PatientIdentityTemplateID
 		provider  = reference.CareProviderTemplateID
 		role      = reference.RoleTemplateID
 		agent     = reference.AgentTemplateID
@@ -94,10 +105,11 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		group     = reference.GroupTemplateID
 		careRel   = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.care_relationship.v1"
 		assignRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.role_assignment.v1"
+		memberRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.party_membership.v1"
 		partOfRel = "openEHR-DEMOGRAPHIC-PARTY_RELATIONSHIP.part_of.v1"
 	)
 	compiled := map[string]*templatecompile.Compiled{}
-	for _, id := range []string{patient, identity, provider, role, agent, careTeam, org, group} {
+	for _, id := range []string{patient, provider, role, agent, careTeam, org, group} {
 		compiled[id] = mustTemplate(t, id)
 	}
 	// A fresh copy of each template's generated party, for one case to change.
@@ -111,31 +123,31 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 		wantCode string
 	}{
 		{
-			name: "patient with a full date of birth", template: patient,
-			mutate: func(p map[string]any) {
-				detailElement(t, p, "at0003")["value"].(map[string]any)["value"] = "2020-05-17"
-			},
-			wantPath: "/details/items[at0003]/value/value", wantCode: "primitive_pattern_mismatch",
-		},
-		{
-			name: "patient with a name", template: patient,
-			mutate: func(p map[string]any) {
-				p["identities"] = append(p["identities"].([]any), party(identity)["identities"].([]any)[0])
-			},
-			wantPath: "/identities[at0031]", wantCode: "slot_fill",
-		},
-		{
-			name: "patient with a contact", template: patient,
-			mutate:   func(p map[string]any) { p["contacts"] = party(identity)["contacts"] },
-			wantPath: "/contacts", wantCode: "prohibited",
-		},
-		{
-			name: "patient with a marital status", template: patient,
+			name: "patient with a qualification", template: patient,
 			mutate: func(p map[string]any) {
 				d := p["details"].(map[string]any)
-				d["items"] = append(detailItems(t, p), detailElement(t, party(identity), "at0011"))
+				d["items"] = append(detailItems(t, p), detailElement(t, party(provider), "at0024"))
 			},
-			wantPath: "/details/items[at0011]", wantCode: "slot_fill",
+			wantPath: "/details/items[at0024]", wantCode: "slot_fill",
+		},
+		{
+			name: "patient with a membership", template: patient,
+			mutate: func(p map[string]any) {
+				p["relationships"] = append(p["relationships"].([]any), relationshipOf(t, party(provider), memberRel))
+			},
+			wantPath: "/relationships", wantCode: "slot_fill",
+		},
+		{
+			name: "patient with two pseudonyms", template: patient,
+			mutate: func(p map[string]any) {
+				p["identities"] = append(p["identities"].([]any), identityOf(t, p, "at0043"))
+			},
+			wantPath: "/identities[at0043]", wantCode: "cardinality",
+		},
+		{
+			name: "patient without an identity", template: patient,
+			mutate:   func(p map[string]any) { p["identities"] = []any{} },
+			wantPath: "/identities", wantCode: "cardinality",
 		},
 		{
 			name: "patient without an identifier", template: patient,
@@ -156,18 +168,6 @@ func TestDemographicTemplatesRefuseWhatTheyKeepOut(t *testing.T) {
 				relationshipOf(t, p, careRel)["target"].(map[string]any)["type"] = "ROLE"
 			},
 			wantPath: "/target/type", wantCode: "primitive_not_in_list",
-		},
-		{
-			name: "identity with a relationship", template: identity,
-			mutate:   func(p map[string]any) { p["relationships"] = party(patient)["relationships"] },
-			wantPath: "/relationships", wantCode: "prohibited",
-		},
-		{
-			name: "identity with a pseudonym", template: identity,
-			mutate: func(p map[string]any) {
-				p["identities"] = append(p["identities"].([]any), party(patient)["identities"].([]any)[0])
-			},
-			wantPath: "/identities[at0043]", wantCode: "slot_fill",
 		},
 		{
 			name: "care provider with a care relationship", template: provider,
