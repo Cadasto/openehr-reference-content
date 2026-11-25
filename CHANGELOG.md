@@ -6,6 +6,8 @@ A template id never starts refusing an instance it accepted before: a change tha
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-25
+
 ### Changed
 
 - **Templates:** `PERSON-Patient.v1` is now the one party that stands for a patient: it takes in everything `PERSON-PatientIdentity.v1` held (names with their structured parts, a full date of birth, date and time of death, marital status, multiple birth, place of birth, addresses, telecom, contact persons, and languages, now any number of them), keeps its mandatory identifier, care relationships and role assignments, and makes its pseudonym optional; it still accepts every instance it accepted, so a consumer that stored a copy should replace it.
@@ -40,6 +42,7 @@ A template id never starts refusing an instance it accepted before: a change tha
 - **Go module:** package `reference` embeds the templates (`TemplateIDs`, `OPT`) with no dependency outside the standard library.
 - **Tooling:** the generator under `tools/generator/`, `make generate`, `make check`, `make sync`, `make ci`, and the `conformance` module that checks every template with openehr-sdk-go.
 
-[Unreleased]: https://github.com/Cadasto/openehr-reference-content/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Cadasto/openehr-reference-content/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Cadasto/openehr-reference-content/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Cadasto/openehr-reference-content/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Cadasto/openehr-reference-content/releases/tag/v0.1.0
